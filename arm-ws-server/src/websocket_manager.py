@@ -25,7 +25,7 @@ class WebSocketManager:
 
     async def close(self):
         if not self.server is None:
-            self.server.close()
+            self.server.wait_closed()
             print('Closed WebSocket server')
 
     def add_client(self, client_websocket):
