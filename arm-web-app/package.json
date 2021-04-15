@@ -23,6 +23,11 @@
       "react-app/jest"
     ]
   },
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -34,5 +39,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-plugin-react": "^7.23.2"
   }
 }
