@@ -1,20 +1,31 @@
-import React from 'react'
 import { Typography } from '@material-ui/core'
-
-import logo from './logo.svg'
+import React, { useState } from 'react'
 import './App.css'
 
-function App() {
+import Expandable from './components/expandable/expandable'
+
+const app = () => {
+  const [expanded, setExpanded] = useState(false)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Typography variant="h5">
-          Edit <code>src/App.js</code> and save to reload.
+      <Expandable
+        width="500px"
+        height="auto"
+        title="Expand Me!"
+        expanded={expanded}
+        onExpand={() => setExpanded(!expanded)}
+      >
+        <Typography>
+          This is a very long description sentence. This is a very long
+          description sentence. This is a very long description sentence. This
+          is a very long description sentence. This is a very long description
+          sentence. This is a very long description sentence. This is a very
+          long description sentence.
         </Typography>
-      </header>
+      </Expandable>
     </div>
   )
 }
 
-export default App
+export default app
