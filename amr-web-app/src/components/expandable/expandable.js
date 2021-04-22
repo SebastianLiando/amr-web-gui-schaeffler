@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import {
   Box,
   Button,
@@ -7,7 +9,6 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core'
-import { ExpandLess } from '@material-ui/icons'
 import React from 'react'
 
 const expandable = (props) => {
@@ -23,12 +24,12 @@ const expandable = (props) => {
     },
 
     expandIcon: {
-      transform: 'rotate(0deg)',
+      transform: 'rotate(180deg)',
       transition: `transform ${duration.standard}ms linear`,
     },
 
     expandIconExpanded: {
-      transform: 'rotate(180deg)',
+      transform: 'rotate(0deg)',
     },
 
     children: {
@@ -49,7 +50,7 @@ const expandable = (props) => {
         <Typography variant="h6" className={classes.typography}>
           {props.title}
         </Typography>
-        <ExpandLess className={iconClasses} />
+        <FontAwesomeIcon icon={faCaretDown} className={iconClasses} size="lg" />
       </Button>
       <Collapse in={props.expanded}>
         <Box className={classes.children}>{props.children}</Box>
