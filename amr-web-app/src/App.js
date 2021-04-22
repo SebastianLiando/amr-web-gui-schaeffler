@@ -1,30 +1,33 @@
-import { Typography } from '@material-ui/core'
+import { Box, makeStyles } from '@material-ui/core'
 import React, { useState } from 'react'
-import './App.css'
 
-import Expandable from './components/expandable/expandable'
+import GeneralHealthState from './components/health-state/general-health-state/general-health-state'
+
+const useStyles = makeStyles({
+  app: {
+    textAlign: 'center',
+    width: '100%',
+  },
+})
 
 const app = () => {
+  const classes = useStyles()
+
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <div className="App">
-      <Expandable
-        width="500px"
-        height="auto"
-        title="Expand Me!"
+    <Box className={classes.app}>
+      <GeneralHealthState
         expanded={expanded}
         onExpand={() => setExpanded(!expanded)}
-      >
-        <Typography>
-          This is a very long description sentence. This is a very long
-          description sentence. This is a very long description sentence. This
-          is a very long description sentence. This is a very long description
-          sentence. This is a very long description sentence. This is a very
-          long description sentence.
-        </Typography>
-      </Expandable>
-    </div>
+        width="400px"
+        data={{
+          battery: 95.293847,
+          temperature: 37.49873,
+          distance: 54.12385,
+        }}
+      />
+    </Box>
   )
 }
 

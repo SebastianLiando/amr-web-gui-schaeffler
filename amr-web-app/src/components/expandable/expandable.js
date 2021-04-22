@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import {
   Box,
   Button,
@@ -7,14 +9,13 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core'
-import { ExpandLess } from '@material-ui/icons'
 import React from 'react'
 
-const expandable = (props) => {
+const expandable = ({width, height, expanded, onExpand, title, children}) => {
   const useStyles = makeStyles({
     expandable: {
-      width: props.width,
-      height: props.height,
+      width: width,
+      height: height,
     },
 
     typography: {
@@ -23,12 +24,12 @@ const expandable = (props) => {
     },
 
     expandIcon: {
-      transform: 'rotate(0deg)',
+      transform: 'rotate(180deg)',
       transition: `transform ${duration.standard}ms linear`,
     },
 
     expandIconExpanded: {
-      transform: 'rotate(180deg)',
+      transform: 'rotate(0deg)',
     },
 
     children: {
@@ -38,21 +39,21 @@ const expandable = (props) => {
 
   const classes = useStyles()
 
-  const iconClasses = (props.expanded
+  const iconClasses = (expanded
     ? [classes.expandIcon]
     : [classes.expandIcon, classes.expandIconExpanded]
   ).join(' ')
 
   return (
     <Paper className={classes.expandable}>
-      <Button fullWidth onClick={props.onExpand}>
+      <Button fullWidth onClick={onExpand}>
         <Typography variant="h6" className={classes.typography}>
-          {props.title}
+          {title}
         </Typography>
-        <ExpandLess className={iconClasses} />
+        <FontAwesomeIcon icon={faCaretDown} className={iconClasses} size="lg" />
       </Button>
-      <Collapse in={props.expanded}>
-        <Box className={classes.children}>{props.children}</Box>
+      <Collapse in={expanded}>
+        <Box className={classes.children}>{children}</Box>
       </Collapse>
     </Paper>
   )
