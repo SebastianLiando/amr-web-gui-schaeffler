@@ -11,11 +11,11 @@ import {
 } from '@material-ui/core'
 import React from 'react'
 
-const expandable = (props) => {
+const expandable = ({width, height, expanded, onExpand, title, children}) => {
   const useStyles = makeStyles({
     expandable: {
-      width: props.width,
-      height: props.height,
+      width: width,
+      height: height,
     },
 
     typography: {
@@ -39,21 +39,21 @@ const expandable = (props) => {
 
   const classes = useStyles()
 
-  const iconClasses = (props.expanded
+  const iconClasses = (expanded
     ? [classes.expandIcon]
     : [classes.expandIcon, classes.expandIconExpanded]
   ).join(' ')
 
   return (
     <Paper className={classes.expandable}>
-      <Button fullWidth onClick={props.onExpand}>
+      <Button fullWidth onClick={onExpand}>
         <Typography variant="h6" className={classes.typography}>
-          {props.title}
+          {title}
         </Typography>
         <FontAwesomeIcon icon={faCaretDown} className={iconClasses} size="lg" />
       </Button>
-      <Collapse in={props.expanded}>
-        <Box className={classes.children}>{props.children}</Box>
+      <Collapse in={expanded}>
+        <Box className={classes.children}>{children}</Box>
       </Collapse>
     </Paper>
   )

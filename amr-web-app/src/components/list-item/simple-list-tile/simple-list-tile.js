@@ -8,24 +8,24 @@ const useStyle = makeStyles({
   },
 })
 
-const simpleListTile = (props) => {
+const simpleListTile = ({icon, title, value}) => {
   const classes = useStyle()
 
   return (
     <Grid container alignItems="center">
-      {props.icon !== undefined ? (
+      {icon !== undefined ? (
         <Grid item xs={2}>
-          <FontAwesomeIcon icon={props.icon} />
+          <FontAwesomeIcon icon={icon} />
         </Grid>
       ) : undefined}
       <Grid item xs={5}>
         <Typography variant="subtitle1" className={classes.title} align="left">
-          {props.title}
+          {title}
         </Typography>
       </Grid>
       <Grid item xs={5}>
         <Typography variant="body2" align="left">
-          {props.value}
+          {value}
         </Typography>
       </Grid>
     </Grid>

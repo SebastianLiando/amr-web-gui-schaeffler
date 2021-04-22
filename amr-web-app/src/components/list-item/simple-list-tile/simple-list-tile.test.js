@@ -55,4 +55,9 @@ describe('<SimpleListTile />', () => {
 
     expect(iconComponent.prop('icon')).toEqual(faCoffee)
   })
+
+  it('should not display icon if not supplied in props', () => {
+    const iconComponent = component.find(FontAwesomeIcon)
+    expect(iconComponent).toHaveLength(0)
+  })
 })
