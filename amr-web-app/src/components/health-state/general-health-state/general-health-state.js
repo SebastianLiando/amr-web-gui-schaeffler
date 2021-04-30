@@ -18,14 +18,9 @@ import {
 
 */
 
-const generalHealthState = ({ expanded, onExpand, width, data }) => {
+const generalHealthState = ({ width, data }) => {
   return (
-    <Expandable
-      title="General"
-      expanded={expanded}
-      onExpand={onExpand}
-      width={width}
-    >
+    <Expandable title="General" width={width}>
       <SimpleListTile
         icon={faBatteryFull}
         title="Battery"

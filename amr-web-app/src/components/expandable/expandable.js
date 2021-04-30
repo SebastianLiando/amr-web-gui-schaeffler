@@ -1,61 +1,38 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
-  Button,
-  Collapse,
-  duration,
   makeStyles,
-  Paper,
   Typography,
 } from '@material-ui/core'
 import React from 'react'
 
-const expandable = ({width, height, expanded, onExpand, title, children}) => {
+const expandable = ({ width, height, title, children }) => {
   const useStyles = makeStyles({
     expandable: {
-      width: width,
-      height: height,
-    },
-
-    typography: {
-      flex: '1 0 auto',
-      textAlign: 'start',
-    },
-
-    expandIcon: {
-      transform: 'rotate(180deg)',
-      transition: `transform ${duration.standard}ms linear`,
-    },
-
-    expandIconExpanded: {
-      transform: 'rotate(0deg)',
+      maxWidth: width,
+      maxHeight: height,
     },
 
     children: {
-      padding: '16px',
+      width: '100%',
     },
   })
 
   const classes = useStyles()
 
-  const iconClasses = (expanded
-    ? [classes.expandIcon]
-    : [classes.expandIcon, classes.expandIconExpanded]
-  ).join(' ')
-
   return (
-    <Paper className={classes.expandable}>
-      <Button fullWidth onClick={onExpand}>
-        <Typography variant="h6" className={classes.typography}>
-          {title}
-        </Typography>
-        <FontAwesomeIcon icon={faCaretDown} className={iconClasses} size="lg" />
-      </Button>
-      <Collapse in={expanded}>
+    <Accordion className={classes.expandable}>
+      <AccordionSummary expandIcon={<FontAwesomeIcon icon={faCaretDown} />}>
+        <Typography variant="h6">{title}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
         <Box className={classes.children}>{children}</Box>
-      </Collapse>
-    </Paper>
+      </AccordionDetails>
+    </Accordion>
   )
 }
 
