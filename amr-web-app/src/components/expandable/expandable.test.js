@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Collapse, Typography } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import { createShallow } from '@material-ui/core/test-utils'
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
 import { configure } from 'enzyme'
@@ -32,17 +32,8 @@ describe('<Expandable />', () => {
     expect(titleComponent.text()).toEqual(title)
   })
 
-  it('should hide body when not expanded', () => {
-    component.setProps({ expanded: false })
-
-    const bodyComponent = component.find(Collapse)
-    expect(bodyComponent.prop('in')).toEqual(false)
-  })
-
-  it('should show body when expanded', () => {
-    component.setProps({ expanded: true })
-
-    const bodyComponent = component.find(Collapse).find('p').at(0)
+  it('should show children in the body', () => {
+    const bodyComponent = component.find(Box).find('p').at(0)
     expect(bodyComponent.text()).toEqual(bodyString)
   })
 })
