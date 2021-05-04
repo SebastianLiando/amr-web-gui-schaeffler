@@ -5,7 +5,7 @@ import { configure } from 'enzyme'
 
 import React from 'react'
 import GeneralHealthState from './general-health-state'
-import SimpleListTile from '../../list-item/simple-list-tile/simple-list-tile'
+import SimpleListContent from '../../list-content/simple-list-content/simple-list-content'
 
 configure({ adapter: new Adapter() })
 
@@ -13,12 +13,11 @@ describe('<GeneralHealthState />', () => {
   let component = null
 
   // Utility function to find the list tile with the given title.
-  const getListTile = (title, component) =>
+  const getTileData = (title, component) =>
     component
-      .findWhere(
-        (node) => node.type() == SimpleListTile && node.prop('title') === title
-      )
-      .at(0)
+      .find(SimpleListContent)
+      .prop('data')
+      .find((e) => e.title === title)
 
   beforeEach(() => {
     const shallow = createShallow()
@@ -33,20 +32,20 @@ describe('<GeneralHealthState />', () => {
   })
 
   it('should display 2 digit battery', () => {
-    const target = getListTile('Battery', component)
+    const target = getTileData('Battery', component)
 
-    expect(target.prop('value')).toEqual('95.29%')
+    expect(target.value).toEqual('95.29%')
   })
 
   it('should display 2 digit temperature in celsius', () => {
-    const target = getListTile('Temperature', component)
+    const target = getTileData('Temperature', component)
 
-    expect(target.prop('value')).toEqual('37.50℃')
+    expect(target.value).toEqual('37.50℃')
   })
 
   it('should display 2 digit distance', () => {
-    const target = getListTile('Distance Travelled', component)
-    
-    expect(target.prop('value')).toEqual('54.12 m')
+    const target = getTileData('Distance Travelled', component)
+
+    expect(target.value).toEqual('54.12 m')
   })
 })
