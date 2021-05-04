@@ -2,7 +2,7 @@ import { Box, makeStyles } from '@material-ui/core'
 import React from 'react'
 
 import GeneralHealthState from './components/health-state/general-health-state/general-health-state'
-import StatusChip from './components/status-chip/status-chip'
+import StatusListContent from './components/list-content/status-list-content/status-list-content'
 
 const useStyles = makeStyles({
   app: {
@@ -24,7 +24,30 @@ const app = () => {
         }}
       />
 
-      <StatusChip title="WARNING" />
+      <StatusListContent
+        data={[
+          {
+            id: 'a',
+            name: 'Sensor A',
+            status: 'ok',
+            details: 'This sensor is working properly.',
+          },
+          {
+            id: 'b',
+            name: 'Sensor B',
+            status: 'warning',
+            details:
+              'This sensor is working, but there is an indication of overheating.',
+          },
+          {
+            id: 'c',
+            name: 'Sensor C',
+            status: 'error',
+            details:
+              'This sensor is not working at all! Try restarting the sensor.',
+          },
+        ]}
+      />
     </Box>
   )
 }
