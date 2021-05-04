@@ -2,7 +2,8 @@ import { Box, makeStyles } from '@material-ui/core'
 import React from 'react'
 
 import GeneralHealthState from './components/health-state/general-health-state/general-health-state'
-import StatusListContent from './components/list-content/status-list-content/status-list-content'
+import MotorStates from './components/health-state/motors-states/motor-states'
+import SensorsStates from './components/health-state/sensors-states/sensors-states'
 
 const useStyles = makeStyles({
   app: {
@@ -16,7 +17,7 @@ const app = () => {
   return (
     <Box className={classes.app}>
       <GeneralHealthState
-        width="400px"
+        width="50%"
         data={{
           battery: 95.293847,
           temperature: 37.49873,
@@ -24,7 +25,8 @@ const app = () => {
         }}
       />
 
-      <StatusListContent
+      <SensorsStates
+        width="50%"
         data={[
           {
             id: 'a',
@@ -45,6 +47,31 @@ const app = () => {
             status: 'error',
             details:
               'This sensor is not working at all! Try restarting the sensor.',
+          },
+        ]}
+      />
+       <MotorStates
+        width="50%"
+        data={[
+          {
+            id: 'a',
+            name: 'Motor A',
+            status: 'ok',
+            details: 'This motor is working properly.',
+          },
+          {
+            id: 'b',
+            name: 'Motor B',
+            status: 'warning',
+            details:
+              'This motor is working, but there is an indication of overheating.',
+          },
+          {
+            id: 'c',
+            name: 'Motor C',
+            status: 'error',
+            details:
+              'This motor is not working at all! Try restarting the motor.',
           },
         ]}
       />
