@@ -20,6 +20,11 @@ const expandable = ({ width, height, title, children }) => {
     children: {
       width: '100%',
     },
+
+    compactVertical: {
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
   })
 
   const classes = useStyles()
@@ -29,7 +34,7 @@ const expandable = ({ width, height, title, children }) => {
       <AccordionSummary expandIcon={<FontAwesomeIcon icon={faCaretDown} />}>
         <Typography variant="h6">{title}</Typography>
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails className={classes.compactVertical}>
         <Box className={classes.children}>{children}</Box>
       </AccordionDetails>
     </Accordion>
