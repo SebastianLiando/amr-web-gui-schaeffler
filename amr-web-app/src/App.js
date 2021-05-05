@@ -4,6 +4,7 @@ import React from 'react'
 import GeneralHealthState from './components/health-state/general-health-state/general-health-state'
 import MotorStates from './components/health-state/motors-states/motor-states'
 import SensorsStates from './components/health-state/sensors-states/sensors-states'
+import Odometry from './components/nav/odometry/odometry'
 
 const useStyles = makeStyles({
   app: {
@@ -50,7 +51,7 @@ const app = () => {
           },
         ]}
       />
-       <MotorStates
+      <MotorStates
         width="50%"
         data={[
           {
@@ -75,6 +76,22 @@ const app = () => {
           },
         ]}
       />
+
+      <div style={{ backgroundColor: 'black', width: '50%', height: '300px' }}>
+        <Odometry
+          width="30%"
+          data={{
+            yaw: 65.432123,
+            vel_yaw: 4.4234,
+            x: 32.353234,
+            vel_x: 3.124321,
+            acc_x: 3.5123,
+            y: 54.33495,
+            vel_y: 4.3432,
+            acc_y: 1.23123,
+          }}
+        />
+      </div>
     </Box>
   )
 }
