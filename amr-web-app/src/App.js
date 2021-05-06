@@ -43,17 +43,17 @@ const app = () => {
 
     ws.onclose = () => {
       setConnected(false)
-      console.log('Disconnected from websocket')
-    }
-
-    ws.onerror = err => {
-      console.log('Socket error: ' + err.message)
-      ws.close()
+      console.log('Disconnected from websocket, reconnecting in ' + timeout / 1000 + ' seconds')
 
       connectTimeoutId = setTimeout(() => {
         console.log('Reconnecting to websocket')
         connectToWebSocket()
-      }, timeout);
+      }, timeout)
+    }
+
+    ws.onerror = () => {
+      console.log('Socket error! Closing socket')
+      ws.close()
     }
   }
 
