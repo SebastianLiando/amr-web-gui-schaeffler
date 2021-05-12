@@ -30,42 +30,88 @@ import const
 
 
 import pygetwindow
-import pyautogui
-from io import BytesIO
-from PIL import Image
+import mss
 import base64
+import time
 
 
-async def send_images(ws_manager):
+async def send_images(ws_manager, fps=30):
+    sct = mss.mss()
+
+    previous_time = 0
+
     while True:
-        window = pygetwindow.getWindowsWithTitle('screenshot')[0]
-        print(window)
+        # Grab bounding box of the interested window
+        window = pygetwindow.getWindowsWithTitle('Twitch')[0]
         x1 = window.left
-        x2 = x1 + 10#window.width
+        width = window.width
         y1 = window.top
-        y2 = y1 + 10#window.height
+        height = window.height
 
-        ss = pyautogui.screenshot()
-        ss = ss.crop((x1, y1, x2, y2))
+        monitor = {
+            'top': y1, 
+            'left': x1, 
+            'width': width, 
+            'height': height,
+        }
+        
+        # Take the screenshot
+        ss = sct.grab(monitor)
 
-        with BytesIO() as output:
-            ss.save(output, format="PNG")
-            contents = output.getvalue()
+        # Compress the screenshot and prepare it to be sent
+        ss_bytes = mss.tools.to_png(ss.rgb, (width, height), level=6)
 
-            payload = {
-                'subject': 'rviz',
-                'data': str(base64.b64encode(contents)),
+        payload = {
+            'subject': 'rviz',
+            'data': str(base64.b64encode(ss_bytes))[2:][:-1],
+        }
+
+        # Send to all clients
+        try:
+            await ws_manager.send_to_clients(json.dumps(payload))
+        except RuntimeError:
+            # If a client closes the connection while data is being sent
+            pass        
+
+        print(f'FPS: {int(1 / (time.time() - previous_time))}')
+        previous_time = time.time()
+        
+        if fps != 0:
+            await asyncio.sleep(1 / fps)
+        else:
+            await asyncio.sleep(0)
+
+
+import random
+
+
+async def send_health_state(ws_manager):
+    yaw = 0
+
+    while True:
+        yaw += 1
+
+        odometry_payload = {
+            'subject': 'odometry',
+            'data': {
+                    'yaw': yaw,
+                    'vel_yaw': random.randint(0, 100) * random.random(),
+                    'x': random.randint(0, 100),
+                    'y': random.randint(0, 100),
+                    'vel_x': random.randint(0, 100) * random.random(),
+                    'vel_y': random.randint(0, 100) * random.random(),
+                    'acc_x': random.randint(0, 100) * random.random(),
+                    'acc_y':random.randint(0, 100) * random.random(),
             }
+        }
 
-            try:
-                await ws_manager.send_to_clients(json.dumps(payload))
-            except RuntimeError:
-                # If a client closes the connection while data is being sent
-                pass
-                
-            print(len(payload['data']))
+        try:
+            await ws_manager.send_to_clients(json.dumps(odometry_payload))
+        except RuntimeError:
+            pass
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.1)
+
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
@@ -74,7 +120,7 @@ if __name__ == '__main__':
     ws_manager = WebSocketManager('localhost', 8765)
 
     # Message handler
-    async def websocket_handler(websocket, path):
+    async def websocket_handler(websocket, _):
         # Register client
         ws_manager.add_client(websocket)
         print(f'Number of clients: {ws_manager.get_client_count()}')
@@ -87,8 +133,12 @@ if __name__ == '__main__':
     loop.run_until_complete(ws_manager.start_server())
 
     # Periodically send screenshots
-    task = loop.create_task(send_images(ws_manager))
-    loop.run_until_complete(task)
+    # task = loop.create_task(send_images(ws_manager, fps=0))
+    # loop.run_until_complete(task)
+
+    # Periodically send health states
+    health_task = loop.create_task(send_health_state(ws_manager))
+    loop.run_until_complete(health_task)
 
     # Spin Up Nats
     # nats_client = NatsClient()
