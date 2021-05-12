@@ -8,9 +8,9 @@ import Odometry from './components/nav/odometry/odometry'
 import StatusChip from './components/status-chip/status-chip'
 
 import {
-  generalHealthData,
+  generalHealthData as dummyGeneralHealthData,
   motorData,
-  odometryData,
+  odometryData as dummyOdometryData,
   sensorData,
 } from './dummy/data'
 
@@ -24,6 +24,9 @@ const app = () => {
   const classes = useStyles()
 
   const [connected, setConnected] = useState(false)
+  const [image, setImage] = useState('')
+  const [odometryData, setOdometryData] = useState(dummyOdometryData)
+  const [generalHealthData, setGeneralHealthData] = useState(dummyGeneralHealthData)
 
   const connectToWebSocket = () => {
     const timeout = 5000
@@ -37,13 +40,29 @@ const app = () => {
       clearTimeout(connectTimeoutId)
     }
 
-    ws.onmessage = () => {
-      console.log('Received message')
+    ws.onmessage = (event) => {
+      const payload = JSON.parse(event.data)
+
+      switch (payload.subject) {
+        case 'rviz':
+          setImage(payload.data)
+          break
+        case 'odometry':
+          setOdometryData(payload.data)
+          break
+        case 'general':
+          setGeneralHealthData(payload.data)
+          break
+      }
     }
 
     ws.onclose = () => {
       setConnected(false)
-      console.log('Disconnected from websocket, reconnecting in ' + timeout / 1000 + ' seconds')
+      console.log(
+        'Disconnected from websocket, reconnecting in ' +
+          timeout / 1000 +
+          ' seconds'
+      )
 
       connectTimeoutId = setTimeout(() => {
         console.log('Reconnecting to websocket')
@@ -64,10 +83,7 @@ const app = () => {
 
   return (
     <Box className={classes.app}>
-      <StatusChip
-        title="WS"
-        type={connected === true ? 'ok' : 'error'}
-      />
+      <StatusChip title="WS" type={connected === true ? 'ok' : 'error'} />
 
       <GeneralHealthState width="50%" data={generalHealthData} />
 
@@ -78,6 +94,14 @@ const app = () => {
       <Box style={{ backgroundColor: 'black', width: '50%', height: '300px' }}>
         <Odometry width="30%" data={odometryData} />
       </Box>
+
+      {image !== '' ? (
+        <img
+          width={800}
+          height={400}
+          src={`data:image/png;base64,${image}`}
+        />
+      ) : null}
     </Box>
   )
 }
