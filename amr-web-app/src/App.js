@@ -6,6 +6,7 @@ import MotorStates from './components/health-state/motors-states/motor-states'
 import SensorsStates from './components/health-state/sensors-states/sensors-states'
 import Odometry from './components/nav/odometry/odometry'
 import StatusChip from './components/status-chip/status-chip'
+import TaskText from './components/task-list/text/task-list-text'
 
 import {
   generalHealthData as dummyGeneralHealthData,
@@ -26,7 +27,9 @@ const app = () => {
   const [connected, setConnected] = useState(false)
   const [image, setImage] = useState('')
   const [odometryData, setOdometryData] = useState(dummyOdometryData)
-  const [generalHealthData, setGeneralHealthData] = useState(dummyGeneralHealthData)
+  const [generalHealthData, setGeneralHealthData] = useState(
+    dummyGeneralHealthData
+  )
 
   const connectToWebSocket = () => {
     const timeout = 5000
@@ -91,16 +94,18 @@ const app = () => {
 
       <MotorStates width="50%" data={motorData} />
 
+      <TaskText
+        taskName="Move to Waypoint A"
+        isComplete={false}
+        taskDetail="This is the task description for move to waypoint A. This will appear only if the expand button is clicked."
+      />
+
       <Box style={{ backgroundColor: 'black', width: '50%', height: '300px' }}>
         <Odometry width="30%" data={odometryData} />
       </Box>
 
       {image !== '' ? (
-        <img
-          width={800}
-          height={400}
-          src={`data:image/png;base64,${image}`}
-        />
+        <img width={800} height={400} src={`data:image/png;base64,${image}`} />
       ) : null}
     </Box>
   )
