@@ -6,6 +6,7 @@ import MotorStates from './components/health-state/motors-states/motor-states'
 import SensorsStates from './components/health-state/sensors-states/sensors-states'
 import Odometry from './components/nav/odometry/odometry'
 import StatusChip from './components/status-chip/status-chip'
+import TaskTab from './components/task-list/tab/tasks-tab'
 import TaskText from './components/task-list/text/task-list-text'
 
 import {
@@ -13,6 +14,7 @@ import {
   motorData,
   odometryData as dummyOdometryData,
   sensorData,
+  tasksData,
 } from './dummy/data'
 
 const useStyles = makeStyles({
@@ -30,6 +32,8 @@ const app = () => {
   const [generalHealthData, setGeneralHealthData] = useState(
     dummyGeneralHealthData
   )
+
+  const [taskTabIndex, setTaskTabIndex] = useState(0)
 
   const connectToWebSocket = () => {
     const timeout = 5000
@@ -103,6 +107,12 @@ const app = () => {
       <Box style={{ backgroundColor: 'black', width: '50%', height: '300px' }}>
         <Odometry width="30%" data={odometryData} />
       </Box>
+
+      <TaskTab
+        onTabChange={(index) => setTaskTabIndex(index)}
+        value={taskTabIndex}
+        tasks={tasksData}
+      />
 
       {image !== '' ? (
         <img width={800} height={400} src={`data:image/png;base64,${image}`} />
