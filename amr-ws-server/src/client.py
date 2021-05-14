@@ -7,7 +7,9 @@ import websockets
 
 async def hello():
     uri = "ws://localhost:8765"
+    print('Connecting to websocket')
     async with websockets.connect(uri) as websocket:
+        print('Connected to websocket')
         async for message in websocket:
             print(f" < {message}")
 

@@ -22,6 +22,7 @@ class WebSocketManager:
             raise Exception('Call set_handler() function first before starting server!')
 
         self.server = await websockets.serve(ws_handler=self.handler, host=self.host, port=self.port)
+        print(f'Started WebSocket Server in ws://{self.host}:{self.port}')
 
     async def close(self):
         if not self.server is None:

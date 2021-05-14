@@ -5,6 +5,11 @@
 This is a web application to visualize Autonomous Mobile Robot (AMR) related data such as robot health state, camera feed, and 2D and 3D navigation.
 
 ### Running the App
+If this is the first time you run the app, install the libraries by running this command.
+
+```
+npm install
+```
 
 Run the following command in the root project folder.
 
