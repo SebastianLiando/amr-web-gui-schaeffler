@@ -59,4 +59,19 @@ const generalHealthData = {
   distance: 54.12385,
 }
 
-export { odometryData, sensorData, motorData, generalHealthData }
+const tasksData = [
+  {
+    id: 1,
+    completed: false,
+    name: 'Move to waypoint A',
+    description: 'The robot should reach waypoint A.',
+  },
+  {
+    id: 2,
+    completed: true,
+    name: 'Move to waypoint B',
+    description: 'The robot should reach waypoint B.',
+  },
+]
+
+export { odometryData, sensorData, motorData, generalHealthData, tasksData }
