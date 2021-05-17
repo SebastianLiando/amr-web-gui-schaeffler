@@ -1,7 +1,7 @@
 import { createMuiTheme, ThemeProvider } from '@material-ui/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import App from './containers/app'
 import reportWebVitals from './reportWebVitals'
 
 import green from '@material-ui/core/colors/green'

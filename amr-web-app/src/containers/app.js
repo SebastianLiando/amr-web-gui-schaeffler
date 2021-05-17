@@ -1,13 +1,13 @@
 import { Box, makeStyles } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 
-import GeneralHealthState from './components/health-state/general-health-state/general-health-state'
-import MotorStates from './components/health-state/motors-states/motor-states'
-import SensorsStates from './components/health-state/sensors-states/sensors-states'
-import Odometry from './components/nav/odometry/odometry'
-import StatusChip from './components/status-chip/status-chip'
-import TaskTab from './components/task-list/tab/tasks-tab'
-import TaskText from './components/task-list/text/task-list-text'
+import GeneralHealthState from '../components/health-state/general-health-state/general-health-state'
+import MotorStates from '../components/health-state/motors-states/motor-states'
+import SensorsStates from '../components/health-state/sensors-states/sensors-states'
+import Odometry from '../components/nav/odometry/odometry'
+import StatusChip from '../components/status-chip/status-chip'
+import TaskTab from '../components/task-list/tab/tasks-tab'
+import TaskText from '../components/task-list/text/task-list-text'
 
 import {
   generalHealthData as dummyGeneralHealthData,
@@ -15,7 +15,7 @@ import {
   odometryData as dummyOdometryData,
   sensorData,
   tasksData,
-} from './dummy/data'
+} from '../dummy/data'
 
 const useStyles = makeStyles({
   app: {
