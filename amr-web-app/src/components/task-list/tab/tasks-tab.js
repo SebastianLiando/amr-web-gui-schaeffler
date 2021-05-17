@@ -2,6 +2,7 @@ import { Box, makeStyles, Tab, Tabs } from '@material-ui/core'
 import { Panorama, List } from '@material-ui/icons'
 import React, { useCallback } from 'react'
 import TabPanel from '../../tabs/panel/tabs-panel'
+import TaskDiagram from '../diagram/task-diagram'
 import TasksList from '../list/tasks-list'
 import { taskTabs } from './const'
 
@@ -38,7 +39,7 @@ const tasksTab = ({ value = 0, onTabChange, tasks = [] }) => {
           <TasksList tasks={tasks} />
         </TabPanel>
         <TabPanel currentValue={value} activeValue={taskTabs.DIAGRAM}>
-          Tab 2
+          <TaskDiagram />
         </TabPanel>
       </Box>
     </Box>
