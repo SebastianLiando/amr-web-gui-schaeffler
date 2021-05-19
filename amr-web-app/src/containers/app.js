@@ -1,5 +1,7 @@
-import { Box, makeStyles } from '@material-ui/core'
+import { Box, makeStyles, Snackbar } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
+
+import { Alert } from '@material-ui/lab'
 
 import GeneralHealthState from '../components/health-state/general-health-state/general-health-state'
 import MotorStates from '../components/health-state/motors-states/motor-states'
@@ -33,12 +35,16 @@ const app = () => {
     dummyGeneralHealthData
   )
 
+  const [errorMessage, setErrorMessage] = useState('')
+
   const [taskTabIndex, setTaskTabIndex] = useState(0)
 
+  const timeout = 5000
+
   const connectToWebSocket = () => {
-    const timeout = 5000
     let connectTimeoutId
 
+    setErrorMessage('')
     const ws = new WebSocket('ws://localhost:8765')
 
     ws.onopen = () => {
@@ -65,11 +71,13 @@ const app = () => {
 
     ws.onclose = () => {
       setConnected(false)
-      console.log(
+      const message =
         'Disconnected from websocket, reconnecting in ' +
-          timeout / 1000 +
-          ' seconds'
-      )
+        timeout / 1000 +
+        ' seconds'
+
+      console.log(message)
+      setErrorMessage(message)
 
       connectTimeoutId = setTimeout(() => {
         console.log('Reconnecting to websocket')
@@ -90,6 +98,18 @@ const app = () => {
 
   return (
     <Box className={classes.app}>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={errorMessage.length !== 0}
+        autoHideDuration={timeout}
+        onClose={() => setErrorMessage('')}
+      >
+        <Alert severity="error">{errorMessage}</Alert>
+      </Snackbar>
+
       <StatusChip title="WS" type={connected === true ? 'ok' : 'error'} />
 
       <GeneralHealthState width="50%" data={generalHealthData} />
