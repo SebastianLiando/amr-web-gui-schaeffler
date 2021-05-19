@@ -206,6 +206,30 @@ const app = () => {
               isComplete={false}
               taskDetail="This is the task description for move to waypoint A. This will appear only if the expand button is clicked."
             />
+
+            <Box
+              style={{
+                backgroundColor: 'black',
+                width: '50%',
+                height: '300px',
+              }}
+            >
+              <Odometry width="30%" data={odometryData} />
+            </Box>
+
+            <TaskTab
+              onTabChange={(index) => setTaskTabIndex(index)}
+              value={taskTabIndex}
+              tasks={tasksData}
+            />
+
+            {image !== '' ? (
+              <img
+                width={800}
+                height={400}
+                src={`data:image/png;base64,${image}`}
+              />
+            ) : null}
           </Grid>
           <Grid item md={6} className={classes.grid}>
             <Box
@@ -236,32 +260,6 @@ const app = () => {
             </Box>
           </Grid>
         </Grid>
-        {/* 
-        <TaskText
-          taskName="Move to Waypoint A"
-          isComplete={false}
-          taskDetail="This is the task description for move to waypoint A. This will appear only if the expand button is clicked."
-        />
-
-        <Box
-          style={{ backgroundColor: 'black', width: '50%', height: '300px' }}
-        >
-          <Odometry width="30%" data={odometryData} />
-        </Box>
-
-        <TaskTab
-          onTabChange={(index) => setTaskTabIndex(index)}
-          value={taskTabIndex}
-          tasks={tasksData}
-        />
-
-        {image !== '' ? (
-          <img
-            width={800}
-            height={400}
-            src={`data:image/png;base64,${image}`}
-          />
-        ) : null} */}
       </Box>
     </Box>
   )
