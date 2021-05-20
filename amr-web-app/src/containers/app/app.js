@@ -2,7 +2,6 @@ import {
   AppBar,
   Box,
   Grid,
-  IconButton,
   makeStyles,
   Snackbar,
   Tab,
@@ -26,10 +25,10 @@ import {
   sensorData,
   tasksData,
 } from '../../dummy/data'
-import { BrightnessHigh, BrightnessLow } from '@material-ui/icons'
 import { mainTabs } from './const'
 import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
 import ServerIndicator from '../../components/top-bar/server-indicator/server-indicator'
+import ThemeToggle from '../../components/top-bar/theme-toggle/theme-toggle'
 
 const useStyles = makeStyles({
   app: {
@@ -196,12 +195,10 @@ const app = () => {
             <CompanyLogo />
           </Box>
           <ServerIndicator connected={connected} />
-          <IconButton
-            color="inherit"
-            onClick={() => setLightTheme(!isLightTheme)}
-          >
-            {isLightTheme ? <BrightnessHigh /> : <BrightnessLow />}
-          </IconButton>
+          <ThemeToggle
+            lightTheme={isLightTheme}
+            onToggle={(result) => setLightTheme(result)}
+          />
         </Toolbar>
       </AppBar>
 
