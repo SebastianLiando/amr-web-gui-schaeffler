@@ -17,7 +17,6 @@ import GeneralHealthState from '../../components/health-state/general-health-sta
 import MotorStates from '../../components/health-state/motors-states/motor-states'
 import SensorsStates from '../../components/health-state/sensors-states/sensors-states'
 import Odometry from '../../components/nav/odometry/odometry'
-import StatusChip from '../../components/status-chip/status-chip'
 import TaskTab from '../../components/task-list/tab/tasks-tab'
 
 import {
@@ -28,9 +27,9 @@ import {
   tasksData,
 } from '../../dummy/data'
 import { BrightnessHigh, BrightnessLow } from '@material-ui/icons'
-import { statusChipTypes } from '../../components/status-chip/const'
 import { mainTabs } from './const'
 import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
+import ServerIndicator from '../../components/top-bar/server-indicator/server-indicator'
 
 const useStyles = makeStyles({
   app: {
@@ -196,10 +195,7 @@ const app = () => {
           <Box className={classes.logo}>
             <CompanyLogo />
           </Box>
-          <StatusChip
-            title="SERVER"
-            type={connected ? statusChipTypes.OK : statusChipTypes.ERROR}
-          />
+          <ServerIndicator connected={connected} />
           <IconButton
             color="inherit"
             onClick={() => setLightTheme(!isLightTheme)}
