@@ -19,7 +19,6 @@ import SensorsStates from '../../components/health-state/sensors-states/sensors-
 import Odometry from '../../components/nav/odometry/odometry'
 import StatusChip from '../../components/status-chip/status-chip'
 import TaskTab from '../../components/task-list/tab/tasks-tab'
-import TaskText from '../../components/task-list/text/task-list-text'
 
 import {
   generalHealthData as dummyGeneralHealthData,
@@ -31,6 +30,7 @@ import {
 import { BrightnessHigh, BrightnessLow } from '@material-ui/icons'
 import { statusChipTypes } from '../../components/status-chip/const'
 import { mainTabs } from './const'
+import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
 
 const useStyles = makeStyles({
   app: {
@@ -48,9 +48,12 @@ const useStyles = makeStyles({
     flex: '1 0 auto',
   },
 
+  logo: {
+    flex: '1 0 auto',
+  },
+
   grid: {
     height: '100%',
-    // flex: '1 0 auto',
   },
 })
 
@@ -190,6 +193,9 @@ const app = () => {
       {/* Top app bar */}
       <AppBar className={classes.appBar} position="static">
         <Toolbar>
+          <Box className={classes.logo}>
+            <CompanyLogo />
+          </Box>
           <StatusChip
             title="SERVER"
             type={connected ? statusChipTypes.OK : statusChipTypes.ERROR}
@@ -207,12 +213,6 @@ const app = () => {
       <Box className={classes.content}>
         <Grid container direction="row" className={classes.grid}>
           <Grid item md={6}>
-            <TaskText
-              taskName="Move to Waypoint A"
-              isComplete={false}
-              taskDetail="This is the task description for move to waypoint A. This will appear only if the expand button is clicked."
-            />
-
             <Box
               style={{
                 backgroundColor: 'black',
