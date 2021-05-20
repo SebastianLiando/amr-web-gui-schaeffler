@@ -144,11 +144,17 @@ const app = () => {
 
   useEffect(() => {
     // Handle the max height for the right box
+
+    const calculateMaxBodyHeightPx = (window, tabBar) =>
+      window.innerHeight - tabBar.offsetHeight - tabBar.offsetTop + 'px'
+
     // eslint-disable-next-line no-unused-vars
     const handleResize = (_) => {
       if (heightRef.current !== undefined) {
-        const newMaxBodyHeight =
-          window.innerHeight - heightRef.current.offsetHeight + 'px'
+        const newMaxBodyHeight = calculateMaxBodyHeightPx(
+          window,
+          heightRef.current
+        )
 
         if (newMaxBodyHeight !== maxBodyHeight) {
           setMaxBodyHeight(newMaxBodyHeight)
@@ -159,7 +165,7 @@ const app = () => {
     window.addEventListener('resize', handleResize)
 
     // Handle first time
-    setMaxBodyHeight(window.innerHeight - heightRef.current.offsetHeight + 'px')
+    setMaxBodyHeight(calculateMaxBodyHeightPx(window, heightRef.current))
 
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -182,7 +188,7 @@ const app = () => {
       </Snackbar>
 
       {/* Top app bar */}
-      <AppBar className={classes.appBar} position="static" ref={heightRef}>
+      <AppBar className={classes.appBar} position="static">
         <Toolbar>
           <StatusChip
             title="SERVER"
@@ -217,12 +223,6 @@ const app = () => {
               <Odometry width="30%" data={odometryData} />
             </Box>
 
-            <TaskTab
-              onTabChange={(index) => setTaskTabIndex(index)}
-              value={taskTabIndex}
-              tasks={tasksData}
-            />
-
             {image !== '' ? (
               <img
                 width={800}
@@ -232,13 +232,8 @@ const app = () => {
             ) : null}
           </Grid>
           <Grid item md={6} className={classes.grid}>
-            <Box
-              style={{
-                maxHeight: maxBodyHeight,
-                overflowY: 'auto',
-              }}
-            >
-              <AppBar position="static">
+            <Box>
+              <AppBar position="static" ref={heightRef}>
                 <Tabs
                   value={mainTabIndex}
                   onChange={(_, value) => setMainTabIndex(value)}
@@ -249,12 +244,25 @@ const app = () => {
                 </Tabs>
               </AppBar>
               <TabContext value={mainTabIndex}>
-                <TabPanel value={mainTabs.STATES}>
+                <TabPanel
+                  value={mainTabs.STATES}
+                  style={{
+                    maxHeight: maxBodyHeight,
+                    overflowY: 'auto',
+                  }}
+                >
                   <GeneralHealthState data={generalHealthData} />
 
                   <SensorsStates data={sensorData} />
 
                   <MotorStates data={motorData} />
+                </TabPanel>
+                <TabPanel value={mainTabs.TASKS}>
+                  <TaskTab
+                    onTabChange={(index) => setTaskTabIndex(index)}
+                    value={taskTabIndex}
+                    tasks={tasksData}
+                  />
                 </TabPanel>
               </TabContext>
             </Box>
