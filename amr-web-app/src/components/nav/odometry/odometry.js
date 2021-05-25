@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Paper, Typography } from '@material-ui/core'
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { NavigationRounded } from '@material-ui/icons'
 import React from 'react'
 
@@ -46,7 +46,7 @@ const odometry = ({ data, width, opacity = '85%' }) => {
   const classes = useStyles()
 
   return (
-    <Paper className={classes.root}>
+    <Box className={classes.root}>
       <Grid container>
         <Grid item xs={6} className={classes.red} align="center">
           <NavigationRounded className={classes.navIcon} color="primary" />
@@ -111,7 +111,7 @@ const odometry = ({ data, width, opacity = '85%' }) => {
           </Grid>
         </Grid>
       </Grid>
-    </Paper>
+    </Box>
   )
 }
 
