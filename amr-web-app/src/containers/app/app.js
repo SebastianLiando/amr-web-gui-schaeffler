@@ -10,6 +10,7 @@ import {
   Tabs,
   ThemeProvider,
   Toolbar,
+  Typography,
 } from '@material-ui/core'
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -64,6 +65,7 @@ const app = () => {
 
   // WebSocket server connection state
   const [connected, setConnected] = useState(false)
+  // eslint-disable-next-line no-unused-vars
   const [image, setImage] = useState('')
 
   // Odometry state
@@ -229,26 +231,45 @@ const app = () => {
         {/* Content */}
         <Box className={classes.content}>
           <Grid container direction="row" className={classes.grid}>
-            <Grid item md={6}>
-              <Box
-                style={{
-                  backgroundColor: 'black',
-                  width: '50%',
-                  height: '300px',
-                }}
-              >
-                <Odometry width="30%" data={odometryData} />
-              </Box>
+            <Grid item md container direction="column">
+              <Grid item xs container direction="row">
+                <Grid
+                  item
+                  xs
+                  style={{
+                    backgroundColor: 'green',
+                  }}
+                >
+                  <Typography>RVIZ</Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs
+                  style={{
+                    backgroundColor: 'cyan',
+                  }}
+                >
+                  <Typography>Gazebo</Typography>
+                </Grid>
+              </Grid>
 
-              {image !== '' ? (
-                <img
-                  width={800}
-                  height={400}
-                  src={`data:image/png;base64,${image}`}
-                />
-              ) : null}
+              <Grid item xs container direction="row">
+                <Grid
+                  item
+                  xs
+                  style={{
+                    backgroundColor: 'salmon',
+                  }}
+                >
+                  <Typography>Camera Feed</Typography>
+                </Grid>
+                <Grid item xs style={{ margin: 'auto' }}>
+                  <Odometry width="100%" data={odometryData} opacity="100%" />
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item md={6} className={classes.grid}>
+
+            <Grid item md className={classes.grid}>
               <Box>
                 <AppBar position="static" ref={heightRef}>
                   <Tabs
