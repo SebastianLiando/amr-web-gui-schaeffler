@@ -27,7 +27,7 @@ const taskListText = ({ taskName, isComplete, taskDetail }) => {
     <Accordion square>
       <AccordionSummary expandIcon={<ExpandMore />}>
         <StatusChip
-          title={isComplete ? taskStatus.COMPLETE : taskStatus.IN_PROGRESS}
+          status={isComplete ? taskStatus.COMPLETE : taskStatus.IN_PROGRESS}
           type={isComplete ? statusChipTypes.OK : statusChipTypes.WARNING}
           width="110px"
         />

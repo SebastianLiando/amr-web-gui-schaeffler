@@ -20,7 +20,7 @@ describe('<StatusChip />', () => {
 
   it('should display title from props', () => {
     const title = 'test title'
-    component.setProps({ title })
+    component.setProps({ status: title })
 
     const renderedTitle = component.find(Chip).at(0).prop('label')
 

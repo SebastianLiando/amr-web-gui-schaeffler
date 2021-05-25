@@ -24,7 +24,7 @@ const serverIndicator = ({
       placement="bottom"
     >
       <StatusChip
-        title={title}
+        status={title}
         type={connected ? statusChipTypes.OK : statusChipTypes.ERROR}
       />
     </Tooltip>
