@@ -1,35 +1,11 @@
-import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './containers/app/app'
 import reportWebVitals from './reportWebVitals'
 
-import green from '@material-ui/core/colors/green'
-
-const appTheme = createMuiTheme({
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        '#root': {
-          minHeight: '100vh',
-          maxHeight: '100vh',
-          display: 'flex',
-          overflow: 'hidden',
-        },
-      },
-    },
-  },
-  palette: {
-    primary: green,
-  },
-})
-
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={appTheme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 )

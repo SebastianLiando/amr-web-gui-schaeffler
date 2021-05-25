@@ -1,11 +1,14 @@
 import {
   AppBar,
   Box,
+  createMuiTheme,
+  CssBaseline,
   Grid,
   makeStyles,
   Snackbar,
   Tab,
   Tabs,
+  ThemeProvider,
   Toolbar,
 } from '@material-ui/core'
 import React, { useEffect, useRef, useState } from 'react'
@@ -29,6 +32,7 @@ import { mainTabs } from './const'
 import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
 import ServerIndicator from '../../components/top-bar/server-indicator/server-indicator'
 import ThemeToggle from '../../components/top-bar/theme-toggle/theme-toggle'
+import { green } from '@material-ui/core/colors'
 
 const useStyles = makeStyles({
   app: {
@@ -81,6 +85,24 @@ const app = () => {
 
   // Light or dark theme state
   const [isLightTheme, setLightTheme] = useState(true)
+  const theme = createMuiTheme({
+    overrides: {
+      MuiCssBaseline: {
+        '@global': {
+          '#root': {
+            minHeight: '100vh',
+            maxHeight: '100vh',
+            display: 'flex',
+            overflow: 'hidden',
+          },
+        },
+      },
+    },
+    palette: {
+      type: isLightTheme ? 'light' : 'dark',
+      primary: green,
+    },
+  })
 
   const [maxBodyHeight, setMaxBodyHeight] = useState('100%')
 
@@ -174,101 +196,104 @@ const app = () => {
   }, [])
 
   return (
-    <Box className={classes.app}>
-      {/* Snack bar that floats */}
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={errorMessage.length !== 0}
-        autoHideDuration={timeout}
-        onClose={() => setErrorMessage('')}
-      >
-        <Alert severity="error">{errorMessage}</Alert>
-      </Snackbar>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box className={classes.app}>
+        {/* Snack bar that floats */}
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={errorMessage.length !== 0}
+          autoHideDuration={timeout}
+          onClose={() => setErrorMessage('')}
+        >
+          <Alert severity="error">{errorMessage}</Alert>
+        </Snackbar>
 
-      {/* Top app bar */}
-      <AppBar className={classes.appBar} position="static">
-        <Toolbar>
-          <Box className={classes.logo}>
-            <CompanyLogo />
-          </Box>
-          <ServerIndicator connected={connected} />
-          <ThemeToggle
-            lightTheme={isLightTheme}
-            onToggle={(result) => setLightTheme(result)}
-          />
-        </Toolbar>
-      </AppBar>
-
-      {/* Content */}
-      <Box className={classes.content}>
-        <Grid container direction="row" className={classes.grid}>
-          <Grid item md={6}>
-            <Box
-              style={{
-                backgroundColor: 'black',
-                width: '50%',
-                height: '300px',
-              }}
-            >
-              <Odometry width="30%" data={odometryData} />
+        {/* Top app bar */}
+        <AppBar className={classes.appBar} position="static">
+          <Toolbar>
+            <Box className={classes.logo}>
+              <CompanyLogo />
             </Box>
+            <ServerIndicator connected={connected} />
+            <ThemeToggle
+              lightTheme={isLightTheme}
+              onToggle={(result) => setLightTheme(result)}
+            />
+          </Toolbar>
+        </AppBar>
 
-            {image !== '' ? (
-              <img
-                width={800}
-                height={400}
-                src={`data:image/png;base64,${image}`}
-              />
-            ) : null}
+        {/* Content */}
+        <Box className={classes.content}>
+          <Grid container direction="row" className={classes.grid}>
+            <Grid item md={6}>
+              <Box
+                style={{
+                  backgroundColor: 'black',
+                  width: '50%',
+                  height: '300px',
+                }}
+              >
+                <Odometry width="30%" data={odometryData} />
+              </Box>
+
+              {image !== '' ? (
+                <img
+                  width={800}
+                  height={400}
+                  src={`data:image/png;base64,${image}`}
+                />
+              ) : null}
+            </Grid>
+            <Grid item md={6} className={classes.grid}>
+              <Box>
+                <AppBar position="static" ref={heightRef}>
+                  <Tabs
+                    value={mainTabIndex}
+                    onChange={(_, value) => setMainTabIndex(value)}
+                    variant="fullWidth"
+                  >
+                    <Tab label="State" value={mainTabs.STATES} />
+                    <Tab label="Tasks" value={mainTabs.TASKS} />
+                  </Tabs>
+                </AppBar>
+                <TabContext value={mainTabIndex}>
+                  <TabPanel
+                    value={mainTabs.STATES}
+                    style={{
+                      maxHeight: maxBodyHeight,
+                      overflowY: 'auto',
+                    }}
+                  >
+                    <GeneralHealthState data={generalHealthData} />
+
+                    <SensorsStates data={sensorData} />
+
+                    <MotorStates data={motorData} />
+                  </TabPanel>
+                  <TabPanel
+                    value={mainTabs.TASKS}
+                    style={{
+                      maxHeight: maxBodyHeight,
+                      overflowY: 'auto',
+                    }}
+                  >
+                    <TaskTab
+                      onTabChange={(index) => setTaskTabIndex(index)}
+                      value={taskTabIndex}
+                      tasks={tasksData}
+                    />
+                  </TabPanel>
+                </TabContext>
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item md={6} className={classes.grid}>
-            <Box>
-              <AppBar position="static" ref={heightRef}>
-                <Tabs
-                  value={mainTabIndex}
-                  onChange={(_, value) => setMainTabIndex(value)}
-                  variant="fullWidth"
-                >
-                  <Tab label="State" value={mainTabs.STATES} />
-                  <Tab label="Tasks" value={mainTabs.TASKS} />
-                </Tabs>
-              </AppBar>
-              <TabContext value={mainTabIndex}>
-                <TabPanel
-                  value={mainTabs.STATES}
-                  style={{
-                    maxHeight: maxBodyHeight,
-                    overflowY: 'auto',
-                  }}
-                >
-                  <GeneralHealthState data={generalHealthData} />
-
-                  <SensorsStates data={sensorData} />
-
-                  <MotorStates data={motorData} />
-                </TabPanel>
-                <TabPanel
-                  value={mainTabs.TASKS}
-                  style={{
-                    maxHeight: maxBodyHeight,
-                    overflowY: 'auto',
-                  }}
-                >
-                  <TaskTab
-                    onTabChange={(index) => setTaskTabIndex(index)}
-                    value={taskTabIndex}
-                    tasks={tasksData}
-                  />
-                </TabPanel>
-              </TabContext>
-            </Box>
-          </Grid>
-        </Grid>
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   )
 }
 
