@@ -29,7 +29,7 @@ describe('<TaskTab />', () => {
 
     const taskList = component.find(TaskList)
 
-    expect(taskList.parent().prop('activeValue')).toEqual(taskTabs.LIST)
+    expect(taskList.parent().prop('value')).toEqual(taskTabs.LIST)
   })
 
   it('second tab should be a task diagram', () => {
@@ -37,7 +37,7 @@ describe('<TaskTab />', () => {
 
     const taskDiagram = component.find(TaskDiagram)
 
-    expect(taskDiagram.parent().prop('activeValue')).toEqual(taskTabs.DIAGRAM)
+    expect(taskDiagram.parent().prop('value')).toEqual(taskTabs.DIAGRAM)
   })
 
   it('should handle tab change event', () => {
