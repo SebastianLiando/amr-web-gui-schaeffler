@@ -231,11 +231,12 @@ const app = () => {
         {/* Content */}
         <Box className={classes.content}>
           <Grid container direction="row" className={classes.grid}>
-            <Grid item md container direction="column">
+            <Grid item xs={12} lg container direction="column">
               <Grid item xs container direction="row">
                 <Grid
                   item
                   xs
+                  sm
                   style={{
                     backgroundColor: 'green',
                   }}
@@ -244,7 +245,8 @@ const app = () => {
                 </Grid>
                 <Grid
                   item
-                  xs
+                  xs={12}
+                  sm
                   style={{
                     backgroundColor: 'cyan',
                   }}
@@ -256,20 +258,21 @@ const app = () => {
               <Grid item xs container direction="row">
                 <Grid
                   item
-                  xs
+                  xs={12}
+                  sm
                   style={{
                     backgroundColor: 'salmon',
                   }}
                 >
                   <Typography>Camera Feed</Typography>
                 </Grid>
-                <Grid item xs style={{ margin: 'auto' }}>
+                <Grid item xs={12} sm align="center" style={{ margin: 'auto' }}>
                   <Odometry width="100%" data={odometryData} opacity="100%" />
                 </Grid>
               </Grid>
             </Grid>
 
-            <Grid item md className={classes.grid}>
+            <Grid item xs={12} lg className={classes.grid}>
               <Box>
                 <AppBar position="static" ref={heightRef}>
                   <Tabs
