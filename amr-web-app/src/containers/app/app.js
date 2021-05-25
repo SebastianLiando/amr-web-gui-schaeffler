@@ -250,7 +250,13 @@ const app = () => {
 
                   <MotorStates data={motorData} />
                 </TabPanel>
-                <TabPanel value={mainTabs.TASKS}>
+                <TabPanel
+                  value={mainTabs.TASKS}
+                  style={{
+                    maxHeight: maxBodyHeight,
+                    overflowY: 'auto',
+                  }}
+                >
                   <TaskTab
                     onTabChange={(index) => setTaskTabIndex(index)}
                     value={taskTabIndex}
