@@ -72,6 +72,30 @@ const tasksData = [
     name: 'Move to waypoint B',
     description: 'The robot should reach waypoint B.',
   },
+  {
+    id: 3,
+    completed: false,
+    name: 'Move to waypoint A',
+    description: 'The robot should reach waypoint A.',
+  },
+  {
+    id: 4,
+    completed: true,
+    name: 'Move to waypoint B',
+    description: 'The robot should reach waypoint B.',
+  },
+  {
+    id: 5,
+    completed: false,
+    name: 'Move to waypoint A',
+    description: 'The robot should reach waypoint A.',
+  },
+  {
+    id: 6,
+    completed: true,
+    name: 'Move to waypoint B',
+    description: 'The robot should reach waypoint B.',
+  },
 ]
 
 export { odometryData, sensorData, motorData, generalHealthData, tasksData }

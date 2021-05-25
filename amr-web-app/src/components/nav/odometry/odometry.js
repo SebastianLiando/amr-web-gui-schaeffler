@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Typography } from '@material-ui/core'
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { NavigationRounded } from '@material-ui/icons'
 import React from 'react'
 
@@ -31,7 +31,7 @@ const odometry = ({ data, width, opacity = '85%' }) => {
     root: {
       width: width,
       minWidth: '230px',
-      backgroundColor: '#FFFFFF',
+      maxWidth: '400px',
       opacity: opacity,
       borderRadius: '8px',
     },
@@ -47,68 +47,72 @@ const odometry = ({ data, width, opacity = '85%' }) => {
   const classes = useStyles()
 
   return (
-    <Grid container className={classes.root}>
-      <Grid item xs={6} className={classes.red} align="center">
-        <NavigationRounded className={classes.navIcon} color="primary" />
-      </Grid>
+    <Box className={classes.root}>
+      <Grid container>
+        <Grid item xs={6} className={classes.red} align="center">
+          <NavigationRounded className={classes.navIcon} color="primary" />
+        </Grid>
 
-      <Grid item container xs={6} className={classes.padded}>
-        <Grid item xs={6}>
-          <Typography variant="body2">Yaw</Typography>
+        <Grid item container xs={6} className={classes.padded}>
+          <Grid item xs={6}>
+            <Typography variant="body2">Yaw</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">{data?.yaw?.toFixed(2)}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2">VelYaw</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">
+              {data?.vel_yaw?.toFixed(2)}
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.yaw?.toFixed(2)}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2">VelYaw</Typography>
-        </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.vel_yaw?.toFixed(2)}</Typography>
-        </Grid>
-      </Grid>
 
-      <Grid item container xs={6} className={classes.padded}>
-        <Grid item xs={6}>
-          <Typography variant="body2">X</Typography>
+        <Grid item container xs={6} className={classes.padded}>
+          <Grid item xs={6}>
+            <Typography variant="body2">X</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">{data?.x?.toFixed(2)}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2">VelX</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">{data?.vel_x?.toFixed(2)}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2">AccX</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">{data?.acc_x?.toFixed(2)}</Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.x?.toFixed(2)}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2">VelX</Typography>
-        </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.vel_x?.toFixed(2)}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2">AccX</Typography>
-        </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.acc_x?.toFixed(2)}</Typography>
-        </Grid>
-      </Grid>
 
-      <Grid item container xs={6} className={classes.padded}>
-        <Grid item xs={6}>
-          <Typography variant="body2">Y</Typography>
-        </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.y?.toFixed(2)}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2">VelY</Typography>
-        </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.vel_y?.toFixed(2)}</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="body2">AccY</Typography>
-        </Grid>
-        <Grid item xs={6} align="center | left">
-          <Typography variant="caption">{data?.acc_y?.toFixed(2)}</Typography>
+        <Grid item container xs={6} className={classes.padded}>
+          <Grid item xs={6}>
+            <Typography variant="body2">Y</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">{data?.y?.toFixed(2)}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2">VelY</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">{data?.vel_y?.toFixed(2)}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2">AccY</Typography>
+          </Grid>
+          <Grid item xs={6} align="center | left">
+            <Typography variant="caption">{data?.acc_y?.toFixed(2)}</Typography>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </Box>
   )
 }
 

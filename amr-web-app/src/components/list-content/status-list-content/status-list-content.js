@@ -46,7 +46,7 @@ const statusListContent = ({ data }) => {
             return (
               <ListItem key={id}>
                 <ListItemAvatar>
-                  <StatusChip type={status} title={status.toUpperCase()} />
+                  <StatusChip type={status} status={status.toUpperCase()} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={name}

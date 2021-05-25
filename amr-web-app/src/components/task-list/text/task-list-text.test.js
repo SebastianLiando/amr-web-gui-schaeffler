@@ -45,7 +45,7 @@ describe('<TaskText />', () => {
     const chipStatus = component
       .find(AccordionSummary)
       .find(StatusChip)
-      .prop('title')
+      .prop('status')
 
     expect(chipStatus).toEqual(taskStatus.IN_PROGRESS)
   })
@@ -54,7 +54,7 @@ describe('<TaskText />', () => {
     const chipStatus = component
       .find(AccordionSummary)
       .find(StatusChip)
-      .prop('title')
+      .prop('status')
 
     expect(chipStatus).toEqual(taskStatus.COMPLETE)
   })

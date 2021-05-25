@@ -1,22 +1,11 @@
-import { createMuiTheme, ThemeProvider } from '@material-ui/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import App from './containers/app/app'
 import reportWebVitals from './reportWebVitals'
-
-import green from '@material-ui/core/colors/green'
-
-const appTheme = createMuiTheme({
-  palette: {
-    primary: green,
-  },
-})
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={appTheme}>
-      <App />
-    </ThemeProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 )
