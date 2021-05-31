@@ -1,6 +1,13 @@
 const mainTabs = {
-  STATES: 0,
-  TASKS: 1,
+  STATES: '0',
+  TASKS: '1',
 }
 
-export { mainTabs }
+const zoomableComponent = {
+  NONE: 'None',
+  RVIZ: 'RVIZ',
+  GAZEBO: 'Gazebo',
+  CAMERA: 'Camera',
+}
+
+export { mainTabs, zoomableComponent }
