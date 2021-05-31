@@ -10,7 +10,6 @@ import {
   Tabs,
   ThemeProvider,
   Toolbar,
-  Typography,
 } from '@material-ui/core'
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -29,11 +28,16 @@ import {
   sensorData,
   tasksData,
 } from '../../dummy/data'
-import { mainTabs } from './const'
+import { mainTabs, zoomableComponent } from './const'
 import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
 import ServerIndicator from '../../components/top-bar/server-indicator/server-indicator'
 import ThemeToggle from '../../components/top-bar/theme-toggle/theme-toggle'
 import { green } from '@material-ui/core/colors'
+import RVIZ from '../streams/rviz/rviz'
+import Gazebo from '../streams/gazebo/gazebo'
+import Camera from '../streams/camera/camera'
+import { taskTabs } from '../../components/task-list/tab/const'
+import { Fragment } from 'react'
 
 const useStyles = makeStyles({
   app: {
@@ -65,8 +69,6 @@ const app = () => {
 
   // WebSocket server connection state
   const [connected, setConnected] = useState(false)
-  // eslint-disable-next-line no-unused-vars
-  const [image, setImage] = useState('')
 
   // Odometry state
   const [odometryData, setOdometryData] = useState(dummyOdometryData)
@@ -80,13 +82,14 @@ const app = () => {
   const [errorMessage, setErrorMessage] = useState('')
 
   // Currently selected index for the task tab
-  const [taskTabIndex, setTaskTabIndex] = useState(0)
+  const [taskTabIndex, setTaskTabIndex] = useState(taskTabs.LIST)
 
   // Currently selected index for the main tab
   const [mainTabIndex, setMainTabIndex] = useState(mainTabs.STATES)
 
   // Light or dark theme state
   const [isLightTheme, setLightTheme] = useState(true)
+
   const theme = createMuiTheme({
     overrides: {
       MuiCssBaseline: {
@@ -107,6 +110,8 @@ const app = () => {
   })
 
   const [maxBodyHeight, setMaxBodyHeight] = useState('100%')
+
+  const [currentZoomed, setCurrentZoomed] = useState(zoomableComponent.NONE)
 
   const heightRef = useRef()
 
@@ -129,7 +134,7 @@ const app = () => {
 
       switch (payload.subject) {
         case 'rviz':
-          setImage(payload.data)
+          // setImage(payload.data)
           break
         case 'odometry':
           setOdometryData(payload.data)
@@ -169,7 +174,6 @@ const app = () => {
 
   useEffect(() => {
     // Handle the max height for the right box
-
     const calculateMaxBodyHeightPx = (window, tabBar) =>
       window.innerHeight - tabBar.offsetHeight - tabBar.offsetTop + 'px'
 
@@ -196,6 +200,69 @@ const app = () => {
       window.removeEventListener('resize', handleResize)
     }
   }, [])
+
+  let leftBox
+
+  // Returns a function that handles zoom in and zoom out of the video streams on the left side
+  const buildZoomHandler = (component) => {
+    return () => {
+      if (currentZoomed != zoomableComponent.NONE) {
+        setCurrentZoomed(zoomableComponent.NONE)
+      } else {
+        setCurrentZoomed(component)
+      }
+    }
+  }
+
+  const rvizComponent = (
+    <RVIZ onIconClick={buildZoomHandler(zoomableComponent.RVIZ)} />
+  )
+
+  const gazeboComponent = (
+    <Gazebo onIconClick={buildZoomHandler(zoomableComponent.GAZEBO)} />
+  )
+
+  const cameraComponent = (
+    <Camera onIconClick={buildZoomHandler(zoomableComponent.CAMERA)} />
+  )
+
+  switch (currentZoomed) {
+    case zoomableComponent.NONE:
+      leftBox = (
+        <Fragment>
+          <Grid item xs container direction="row">
+            <Grid item xs sm>
+              {rvizComponent}
+            </Grid>
+            <Grid item xs={12} sm>
+              {gazeboComponent}
+            </Grid>
+          </Grid>
+
+          <Grid item xs container direction="row">
+            <Grid item xs={12} sm>
+              {cameraComponent}
+            </Grid>
+            <Grid item xs={12} sm align="center" style={{ margin: 'auto' }}>
+              <Odometry width="100%" data={odometryData} opacity="100%" />
+            </Grid>
+          </Grid>
+        </Fragment>
+      )
+      break
+
+    case zoomableComponent.RVIZ:
+      leftBox = rvizComponent
+      break
+
+    case zoomableComponent.GAZEBO:
+      leftBox = gazeboComponent
+      break
+
+    case zoomableComponent.CAMERA:
+      leftBox = cameraComponent
+      break
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -231,60 +298,25 @@ const app = () => {
         {/* Content */}
         <Box className={classes.content}>
           <Grid container direction="row" className={classes.grid}>
-            <Grid item xs={12} lg container direction="column">
-              <Grid item xs container direction="row">
-                <Grid
-                  item
-                  xs
-                  sm
-                  style={{
-                    backgroundColor: 'green',
-                  }}
-                >
-                  <Typography>RVIZ</Typography>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm
-                  style={{
-                    backgroundColor: 'cyan',
-                  }}
-                >
-                  <Typography>Gazebo</Typography>
-                </Grid>
-              </Grid>
-
-              <Grid item xs container direction="row">
-                <Grid
-                  item
-                  xs={12}
-                  sm
-                  style={{
-                    backgroundColor: 'salmon',
-                  }}
-                >
-                  <Typography>Camera Feed</Typography>
-                </Grid>
-                <Grid item xs={12} sm align="center" style={{ margin: 'auto' }}>
-                  <Odometry width="100%" data={odometryData} opacity="100%" />
-                </Grid>
-              </Grid>
+            {/* Left Box */}
+            <Grid item xs={12} lg={7} container direction="column">
+              {leftBox}
             </Grid>
 
-            <Grid item xs={12} lg className={classes.grid}>
+            {/* Right Box */}
+            <Grid item xs={12} lg={5} className={classes.grid}>
               <Box>
                 <AppBar position="static" ref={heightRef}>
                   <Tabs
-                    value={mainTabIndex}
+                    value={parseInt(mainTabIndex)}
                     onChange={(_, value) => setMainTabIndex(value)}
                     variant="fullWidth"
                   >
-                    <Tab label="State" value={mainTabs.STATES} />
-                    <Tab label="Tasks" value={mainTabs.TASKS} />
+                    <Tab label="State" />
+                    <Tab label="Tasks" />
                   </Tabs>
                 </AppBar>
-                <TabContext value={mainTabIndex}>
+                <TabContext value={mainTabIndex.toString()}>
                   <TabPanel
                     value={mainTabs.STATES}
                     style={{

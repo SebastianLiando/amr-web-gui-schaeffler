@@ -6,10 +6,10 @@ import TaskDiagram from '../diagram/task-diagram'
 import TasksList from '../list/tasks-list'
 import { taskTabs } from './const'
 
-const tasksTab = ({ value = 0, onTabChange, tasks = [] }) => {
+const tasksTab = ({ value = taskTabs.LIST, onTabChange, tasks = [] }) => {
   const tabChangeHandler = useCallback(
-    (_, index) => {
-      onTabChange?.call(onTabChange, index)
+    (_, tabValue) => {
+      onTabChange?.call(onTabChange, tabValue)
     },
     [onTabChange]
   )
@@ -19,14 +19,14 @@ const tasksTab = ({ value = 0, onTabChange, tasks = [] }) => {
       <Tabs
         textColor="secondary"
         indicatorColor="secondary"
-        value={value}
+        value={parseInt(value)}
         onChange={tabChangeHandler}
         variant="fullWidth"
       >
         <Tab icon={<List />} label="List" />
         <Tab icon={<Panorama />} label="Diagram" />
       </Tabs>
-      <TabContext value={value}>
+      <TabContext value={value.toString()}>
         <TabPanel value={taskTabs.LIST}>
           <TasksList tasks={tasks} />
         </TabPanel>
