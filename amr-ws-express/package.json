@@ -1,0 +1,8 @@
+{
+  "name": "amr-websocket-server",
+  "version": "0.0.1",
+  "description": "A WebSocket server for AMR Web GUI",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
