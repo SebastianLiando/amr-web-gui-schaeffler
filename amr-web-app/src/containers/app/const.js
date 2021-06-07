@@ -21,4 +21,10 @@ const socketMessage = {
   TASKS: 'tasks',
 }
 
-export { mainTabs, zoomableComponent, socketMessage }
+// This web application's configuration
+const config = {
+  WS_ADDRESS: 'ws://localhost:5500',
+  WS_RECONNECT_DELAY: 5000,
+}
+
+export { mainTabs, zoomableComponent, socketMessage, config }

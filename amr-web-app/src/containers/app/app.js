@@ -17,6 +17,7 @@ import React, {
   useState,
   Fragment,
   useCallback,
+  useMemo,
 } from 'react'
 
 import { Alert, TabContext, TabPanel } from '@material-ui/lab'
@@ -27,7 +28,7 @@ import SensorsStates from '../../components/health-state/sensors-states/sensors-
 import Odometry from '../../components/nav/odometry/odometry'
 import TaskTab from '../../components/task-list/tab/tasks-tab'
 
-import { mainTabs, zoomableComponent, socketMessage } from './const'
+import { mainTabs, zoomableComponent, socketMessage, config } from './const'
 import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
 import ServerIndicator from '../../components/top-bar/server-indicator/server-indicator'
 import ThemeToggle from '../../components/top-bar/theme-toggle/theme-toggle'
@@ -94,24 +95,28 @@ const app = () => {
   // Light or dark theme state
   const [isLightTheme, setLightTheme] = useState(true)
 
-  const theme = createMuiTheme({
-    overrides: {
-      MuiCssBaseline: {
-        '@global': {
-          '#root': {
-            minHeight: '100vh',
-            maxHeight: '100vh',
-            display: 'flex',
-            overflow: 'hidden',
+  const theme = useMemo(
+    () =>
+      createMuiTheme({
+        overrides: {
+          MuiCssBaseline: {
+            '@global': {
+              '#root': {
+                minHeight: '100vh',
+                maxHeight: '100vh',
+                display: 'flex',
+                overflow: 'hidden',
+              },
+            },
           },
         },
-      },
-    },
-    palette: {
-      type: isLightTheme ? 'light' : 'dark',
-      primary: green,
-    },
-  })
+        palette: {
+          type: isLightTheme ? 'light' : 'dark',
+          primary: green,
+        },
+      }),
+    [isLightTheme]
+  )
 
   const [maxBodyHeight, setMaxBodyHeight] = useState('100%')
 
@@ -119,10 +124,10 @@ const app = () => {
 
   const heightRef = useRef()
 
-  const reconnectionMs = 5000
+  const reconnectionMs = config.WS_RECONNECT_DELAY
 
   const connectToWebSocket = useCallback(() => {
-    const socket = io('ws://localhost:5500', {
+    const socket = io(config.WS_ADDRESS, {
       reconnectionDelay: reconnectionMs,
     })
 
@@ -153,7 +158,6 @@ const app = () => {
     socket.on(socketMessage.MOTORS, (data) => setMotorData(data))
 
     socket.on(socketMessage.TASKS, (data) => setTasksData(data))
-    
   }, [setConnected, setErrorMessage])
 
   // componentDidMount()
