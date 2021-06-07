@@ -61,4 +61,4 @@ const statusListContent = ({ data }) => {
   )
 }
 
-export default statusListContent
+export default React.memo(statusListContent)

@@ -30,4 +30,4 @@ const tasksList = ({ tasks = [] }) => {
   )
 }
 
-export default tasksList
+export default React.memo(tasksList)

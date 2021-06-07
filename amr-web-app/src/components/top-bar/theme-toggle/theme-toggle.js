@@ -19,4 +19,4 @@ const themeToggle = ({
   )
 }
 
-export default themeToggle
+export default React.memo(themeToggle)

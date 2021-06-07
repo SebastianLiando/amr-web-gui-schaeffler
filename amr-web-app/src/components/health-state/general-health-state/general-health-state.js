@@ -44,4 +44,4 @@ const generalHealthState = ({ width, data }) => {
   )
 }
 
-export default generalHealthState
+export default React.memo(generalHealthState)
