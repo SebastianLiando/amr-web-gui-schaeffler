@@ -14,7 +14,12 @@ const {
   motorData,
   sensorData,
 } = require("./dummy/data");
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
 
 // When a client connects to the server
 io.on("connection", (clientSocket) => {
