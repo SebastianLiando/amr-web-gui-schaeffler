@@ -31,4 +31,4 @@ const simpleListContent = ({ data }) => {
   )
 }
 
-export default simpleListContent
+export default React.memo(simpleListContent)

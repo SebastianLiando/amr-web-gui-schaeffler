@@ -32,4 +32,4 @@ const motorStates = ({ data, width }) => {
   )
 }
 
-export default motorStates
+export default React.memo(motorStates)

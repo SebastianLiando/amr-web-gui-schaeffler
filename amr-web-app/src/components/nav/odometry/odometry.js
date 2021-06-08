@@ -1,6 +1,6 @@
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core'
 import { NavigationRounded } from '@material-ui/icons'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 /*
     Units
@@ -25,24 +25,28 @@ import React from 'react'
 
 */
 const odometry = ({ data, width, opacity = '85%' }) => {
-  const rotation = `${data?.yaw ?? 0}deg`
+  const rotation = useMemo(() => `${data?.yaw ?? 0}deg`, [data])
 
-  const useStyles = makeStyles({
-    root: {
-      width: width,
-      minWidth: '230px',
-      maxWidth: '400px',
-      opacity: opacity,
-      borderRadius: '8px',
-    },
-    padded: {
-      padding: '4px 8px',
-    },
-    navIcon: {
-      fontSize: '70px',
-      transform: `rotate(${rotation})`,
-    },
-  })
+  const useStyles = useMemo(
+    () =>
+      makeStyles({
+        root: {
+          width: width,
+          minWidth: '230px',
+          maxWidth: '400px',
+          opacity: opacity,
+          borderRadius: '8px',
+        },
+        padded: {
+          padding: '4px 8px',
+        },
+        navIcon: {
+          fontSize: '70px',
+          transform: `rotate(${rotation})`,
+        },
+      }),
+    [width, opacity, rotation]
+  )
 
   const classes = useStyles()
 
@@ -116,4 +120,4 @@ const odometry = ({ data, width, opacity = '85%' }) => {
   )
 }
 
-export default odometry
+export default React.memo(odometry)

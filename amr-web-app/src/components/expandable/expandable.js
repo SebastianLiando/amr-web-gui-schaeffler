@@ -8,24 +8,28 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 const expandable = ({ width, height, title, children }) => {
-  const useStyles = makeStyles({
-    expandable: {
-      maxWidth: width,
-      maxHeight: height,
-    },
+  const useStyles = useMemo(
+    () =>
+      makeStyles({
+        expandable: {
+          maxWidth: width,
+          maxHeight: height,
+        },
 
-    children: {
-      width: '100%',
-    },
+        children: {
+          width: '100%',
+        },
 
-    compactVertical: {
-      paddingTop: 0,
-      paddingBottom: 0,
-    },
-  })
+        compactVertical: {
+          paddingTop: 0,
+          paddingBottom: 0,
+        },
+      }),
+    [width, height]
+  )
 
   const classes = useStyles()
 
@@ -41,4 +45,4 @@ const expandable = ({ width, height, title, children }) => {
   )
 }
 
-export default expandable
+export default React.memo(expandable)

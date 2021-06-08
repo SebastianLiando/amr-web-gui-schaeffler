@@ -1,5 +1,5 @@
 import { makeStyles, Tooltip } from '@material-ui/core'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import logo from '../../../assets/images/schaeffler-logo.png'
 
@@ -9,14 +9,19 @@ const companyLogo = ({
   borderRadius = '8px',
   tooltip = 'Schaeffler logo',
 }) => {
-  const classes = makeStyles({
-    logo: {
-      height: 'auto',
-      width: width,
-      background: bgColor,
-      borderRadius: borderRadius,
-    },
-  })()
+  const useStyles = useMemo(
+    () =>
+      makeStyles({
+        logo: {
+          height: 'auto',
+          width: width,
+          background: bgColor,
+          borderRadius: borderRadius,
+        },
+      }),
+    [width, bgColor, borderRadius]
+  )
+  const classes = useStyles()
 
   return (
     <Tooltip title={tooltip}>
@@ -25,4 +30,4 @@ const companyLogo = ({
   )
 }
 
-export default companyLogo
+export default React.memo(companyLogo)

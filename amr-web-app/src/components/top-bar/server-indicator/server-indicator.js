@@ -31,4 +31,4 @@ const serverIndicator = ({
   )
 }
 
-export default serverIndicator
+export default React.memo(serverIndicator)

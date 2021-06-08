@@ -11,7 +11,14 @@ import {
   ThemeProvider,
   Toolbar,
 } from '@material-ui/core'
-import React, { useEffect, useRef, useState } from 'react'
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  Fragment,
+  useCallback,
+  useMemo,
+} from 'react'
 
 import { Alert, TabContext, TabPanel } from '@material-ui/lab'
 
@@ -21,14 +28,7 @@ import SensorsStates from '../../components/health-state/sensors-states/sensors-
 import Odometry from '../../components/nav/odometry/odometry'
 import TaskTab from '../../components/task-list/tab/tasks-tab'
 
-import {
-  generalHealthData as dummyGeneralHealthData,
-  motorData,
-  odometryData as dummyOdometryData,
-  sensorData,
-  tasksData,
-} from '../../dummy/data'
-import { mainTabs, zoomableComponent } from './const'
+import { mainTabs, zoomableComponent, socketMessage, config } from './const'
 import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
 import ServerIndicator from '../../components/top-bar/server-indicator/server-indicator'
 import ThemeToggle from '../../components/top-bar/theme-toggle/theme-toggle'
@@ -37,7 +37,8 @@ import RVIZ from '../streams/rviz/rviz'
 import Gazebo from '../streams/gazebo/gazebo'
 import Camera from '../streams/camera/camera'
 import { taskTabs } from '../../components/task-list/tab/const'
-import { Fragment } from 'react'
+
+import { io } from 'socket.io-client'
 
 const useStyles = makeStyles({
   app: {
@@ -71,12 +72,16 @@ const app = () => {
   const [connected, setConnected] = useState(false)
 
   // Odometry state
-  const [odometryData, setOdometryData] = useState(dummyOdometryData)
+  const [odometryData, setOdometryData] = useState()
 
   // General health state
-  const [generalHealthData, setGeneralHealthData] = useState(
-    dummyGeneralHealthData
-  )
+  const [generalHealthData, setGeneralHealthData] = useState()
+
+  const [motorData, setMotorData] = useState()
+
+  const [sensorData, setSensorData] = useState()
+
+  const [tasksData, setTasksData] = useState()
 
   // Error message to be displayed in the snack bar
   const [errorMessage, setErrorMessage] = useState('')
@@ -90,24 +95,28 @@ const app = () => {
   // Light or dark theme state
   const [isLightTheme, setLightTheme] = useState(true)
 
-  const theme = createMuiTheme({
-    overrides: {
-      MuiCssBaseline: {
-        '@global': {
-          '#root': {
-            minHeight: '100vh',
-            maxHeight: '100vh',
-            display: 'flex',
-            overflow: 'hidden',
+  const theme = useMemo(
+    () =>
+      createMuiTheme({
+        overrides: {
+          MuiCssBaseline: {
+            '@global': {
+              '#root': {
+                minHeight: '100vh',
+                maxHeight: '100vh',
+                display: 'flex',
+                overflow: 'hidden',
+              },
+            },
           },
         },
-      },
-    },
-    palette: {
-      type: isLightTheme ? 'light' : 'dark',
-      primary: green,
-    },
-  })
+        palette: {
+          type: isLightTheme ? 'light' : 'dark',
+          primary: green,
+        },
+      }),
+    [isLightTheme]
+  )
 
   const [maxBodyHeight, setMaxBodyHeight] = useState('100%')
 
@@ -115,64 +124,47 @@ const app = () => {
 
   const heightRef = useRef()
 
-  const timeout = 5000
+  const reconnectionMs = config.WS_RECONNECT_DELAY
 
-  const connectToWebSocket = () => {
-    let connectTimeoutId
+  const connectToWebSocket = useCallback(() => {
+    const socket = io(config.WS_ADDRESS, {
+      reconnectionDelay: reconnectionMs,
+    })
 
-    setErrorMessage('')
-    const ws = new WebSocket('ws://localhost:8765')
-
-    ws.onopen = () => {
+    socket.on('connect', () => {
+      setErrorMessage('')
       setConnected(true)
       console.log('Connected to websocket')
-      clearTimeout(connectTimeoutId)
-    }
+    })
 
-    ws.onmessage = (event) => {
-      const payload = JSON.parse(event.data)
-
-      switch (payload.subject) {
-        case 'rviz':
-          // setImage(payload.data)
-          break
-        case 'odometry':
-          setOdometryData(payload.data)
-          break
-        case 'general':
-          setGeneralHealthData(payload.data)
-          break
-      }
-    }
-
-    ws.onclose = () => {
+    socket.on('connect_error', () => {
       setConnected(false)
       const message =
-        'Disconnected from websocket, reconnecting in ' +
-        timeout / 1000 +
+        'Disconnected from websocket, reconnecting after ' +
+        reconnectionMs / 1000 +
         ' seconds'
 
-      console.log(message)
       setErrorMessage(message)
+    })
 
-      connectTimeoutId = setTimeout(() => {
-        console.log('Reconnecting to websocket')
-        connectToWebSocket()
-      }, timeout)
-    }
+    socket.on(socketMessage.GENERAL_HEALTH, (data) =>
+      setGeneralHealthData(data)
+    )
 
-    ws.onerror = () => {
-      console.log('Socket error! Closing socket')
-      ws.close()
-    }
-  }
+    socket.on(socketMessage.ODOMETRY, (data) => setOdometryData(data))
 
-  // componentDidMount - connect to websocket
+    socket.on(socketMessage.SENSORS, (data) => setSensorData(data))
+
+    socket.on(socketMessage.MOTORS, (data) => setMotorData(data))
+
+    socket.on(socketMessage.TASKS, (data) => setTasksData(data))
+  }, [setConnected, setErrorMessage])
+
+  // componentDidMount()
   useEffect(() => {
+    // Connect to web socket server
     connectToWebSocket()
-  }, [])
 
-  useEffect(() => {
     // Handle the max height for the right box
     const calculateMaxBodyHeightPx = (window, tabBar) =>
       window.innerHeight - tabBar.offsetHeight - tabBar.offsetTop + 'px'
@@ -204,15 +196,18 @@ const app = () => {
   let leftBox
 
   // Returns a function that handles zoom in and zoom out of the video streams on the left side
-  const buildZoomHandler = (component) => {
-    return () => {
-      if (currentZoomed != zoomableComponent.NONE) {
-        setCurrentZoomed(zoomableComponent.NONE)
-      } else {
-        setCurrentZoomed(component)
+  const buildZoomHandler = useCallback(
+    (component) => {
+      return () => {
+        if (currentZoomed != zoomableComponent.NONE) {
+          setCurrentZoomed(zoomableComponent.NONE)
+        } else {
+          setCurrentZoomed(component)
+        }
       }
-    }
-  }
+    },
+    [currentZoomed]
+  )
 
   const rvizComponent = (
     <RVIZ onIconClick={buildZoomHandler(zoomableComponent.RVIZ)} />
@@ -275,7 +270,7 @@ const app = () => {
             horizontal: 'left',
           }}
           open={errorMessage.length !== 0}
-          autoHideDuration={timeout}
+          autoHideDuration={reconnectionMs}
           onClose={() => setErrorMessage('')}
         >
           <Alert severity="error">{errorMessage}</Alert>

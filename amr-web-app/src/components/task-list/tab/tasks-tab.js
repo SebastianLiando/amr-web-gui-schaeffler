@@ -38,4 +38,4 @@ const tasksTab = ({ value = taskTabs.LIST, onTabChange, tasks = [] }) => {
   )
 }
 
-export default tasksTab
+export default React.memo(tasksTab)

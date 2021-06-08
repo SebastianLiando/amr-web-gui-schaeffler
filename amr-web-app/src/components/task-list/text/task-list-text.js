@@ -46,4 +46,4 @@ const taskListText = ({ taskName, isComplete, taskDetail }) => {
   )
 }
 
-export default taskListText
+export default React.memo(taskListText)

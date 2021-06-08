@@ -26,17 +26,17 @@ const generalHealthState = ({ width, data }) => {
           {
             icon: faBatteryFull,
             title: 'Battery',
-            value: `${data['battery'].toFixed(2)}%`,
+            value: data ? `${data['battery'].toFixed(2)}%` : '',
           },
           {
             icon: faThermometerThreeQuarters,
             title: 'Temperature',
-            value: `${data['temperature'].toFixed(2)}℃`,
+            value: data ? `${data['temperature'].toFixed(2)}℃` : '',
           },
           {
             icon: faRoute,
             title: 'Distance Travelled',
-            value: `${data['distance'].toFixed(2)} m`,
+            value: data ? `${data['distance'].toFixed(2)} m` : '',
           },
         ]}
       />
@@ -44,4 +44,4 @@ const generalHealthState = ({ width, data }) => {
   )
 }
 
-export default generalHealthState
+export default React.memo(generalHealthState)

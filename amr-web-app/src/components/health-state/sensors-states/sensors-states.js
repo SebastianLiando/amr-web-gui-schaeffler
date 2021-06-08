@@ -32,4 +32,4 @@ const sensorsStates = ({ data, width }) => {
   )
 }
 
-export default sensorsStates
+export default React.memo(sensorsStates)
