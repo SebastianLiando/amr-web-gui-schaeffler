@@ -1,5 +1,7 @@
 const PORT = 5500;
 
+const fs = require("fs");
+
 const express = require("express");
 const app = express();
 
@@ -14,6 +16,7 @@ const {
   motorData,
   sensorData,
 } = require("./dummy/data");
+
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -35,6 +38,10 @@ io.on("connection", (clientSocket) => {
 
     // Send sensors states
     clientSocket.emit("sensors", sensorData);
+
+    fs.readFile("dummy/smach_viewer.png", (err, data) => {
+      io.emit("task_image", data);
+    });
   }, 5000);
 
   clientSocket.on("disconnect", () =>

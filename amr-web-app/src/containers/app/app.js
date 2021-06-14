@@ -1,8 +1,13 @@
 import {
   AppBar,
   Box,
+  Button,
+  Container,
   createMuiTheme,
   CssBaseline,
+  Dialog,
+  DialogActions,
+  DialogContent,
   Grid,
   makeStyles,
   Snackbar,
@@ -10,6 +15,7 @@ import {
   Tabs,
   ThemeProvider,
   Toolbar,
+  Typography,
 } from '@material-ui/core'
 import React, {
   useEffect,
@@ -39,6 +45,7 @@ import Camera from '../streams/camera/camera'
 import { taskTabs } from '../../components/task-list/tab/const'
 
 import { io } from 'socket.io-client'
+import TaskDiagram from '../../components/task-list/diagram/task-diagram'
 
 const useStyles = makeStyles({
   app: {
@@ -83,6 +90,9 @@ const app = () => {
 
   const [tasksData, setTasksData] = useState()
 
+  // Task diagram image
+  const [taskImage, setTaskImage] = useState()
+
   // Error message to be displayed in the snack bar
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -94,6 +104,9 @@ const app = () => {
 
   // Light or dark theme state
   const [isLightTheme, setLightTheme] = useState(true)
+
+  // Is the full width dialog open
+  const [isDialogOpen, setDialogOpen] = useState(false)
 
   const theme = useMemo(
     () =>
@@ -123,6 +136,11 @@ const app = () => {
   const [currentZoomed, setCurrentZoomed] = useState(zoomableComponent.NONE)
 
   const heightRef = useRef()
+
+  // Reference to the right grid
+  const rightBoxRef = useRef()
+
+  const [taskDiagramMaxWidth, setTaskDiagramMaxWidth] = useState('100%')
 
   const reconnectionMs = config.WS_RECONNECT_DELAY
 
@@ -158,6 +176,11 @@ const app = () => {
     socket.on(socketMessage.MOTORS, (data) => setMotorData(data))
 
     socket.on(socketMessage.TASKS, (data) => setTasksData(data))
+
+    socket.on(socketMessage.TASK_DIAGRAM, (data) => {
+      const base64Image = btoa(String.fromCharCode(...new Uint8Array(data)))
+      setTaskImage(base64Image)
+    })
   }, [setConnected, setErrorMessage])
 
   // componentDidMount()
@@ -171,6 +194,7 @@ const app = () => {
 
     // eslint-disable-next-line no-unused-vars
     const handleResize = (_) => {
+      // Right box vertical scrolling
       if (heightRef.current !== undefined) {
         const newMaxBodyHeight = calculateMaxBodyHeightPx(
           window,
@@ -181,12 +205,21 @@ const app = () => {
           setMaxBodyHeight(newMaxBodyHeight)
         }
       }
+
+      // Task diagram maximum width
+      if (rightBoxRef.current !== undefined) {
+        const width = rightBoxRef.current.offsetWidth * 0.8 + 'px'
+
+        if (width !== taskDiagramMaxWidth) {
+          setTaskDiagramMaxWidth(width)
+        }
+      }
     }
 
     window.addEventListener('resize', handleResize)
 
-    // Handle first time
-    setMaxBodyHeight(calculateMaxBodyHeightPx(window, heightRef.current))
+    // Handle first time load
+    handleResize('')
 
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -259,6 +292,8 @@ const app = () => {
       break
   }
 
+  const closeDialog = useCallback(() => setDialogOpen(false), [setDialogOpen])
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -275,6 +310,23 @@ const app = () => {
         >
           <Alert severity="error">{errorMessage}</Alert>
         </Snackbar>
+
+        {/* Dialog */}
+        <Dialog
+          open={isDialogOpen}
+          fullWidth
+          maxWidth={false}
+          onClose={closeDialog}
+        >
+          <DialogContent>
+            <TaskDiagram base64Png={taskImage} />
+          </DialogContent>
+          <DialogActions>
+            <Button color="secondary" onClick={closeDialog}>
+              <Typography>Close</Typography>
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {/* Top app bar */}
         <AppBar className={classes.appBar} position="static">
@@ -299,7 +351,13 @@ const app = () => {
             </Grid>
 
             {/* Right Box */}
-            <Grid item xs={12} lg={5} className={classes.grid}>
+            <Grid
+              item
+              xs={12}
+              lg={5}
+              className={classes.grid}
+              ref={rightBoxRef}
+            >
               <Box>
                 <AppBar position="static" ref={heightRef}>
                   <Tabs
@@ -332,11 +390,16 @@ const app = () => {
                       overflowY: 'auto',
                     }}
                   >
-                    <TaskTab
-                      onTabChange={(index) => setTaskTabIndex(index)}
-                      value={taskTabIndex}
-                      tasks={tasksData}
-                    />
+                    <Container>
+                      <TaskTab
+                        base64Png={taskImage}
+                        onTabChange={(index) => setTaskTabIndex(index)}
+                        value={taskTabIndex}
+                        tasks={tasksData}
+                        diagramMaxWidth={taskDiagramMaxWidth}
+                        onDiagramClick={() => setDialogOpen(true)}
+                      />
+                    </Container>
                   </TabPanel>
                 </TabContext>
               </Box>
