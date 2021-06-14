@@ -36,6 +36,13 @@ socket.on("sensors", (arr) =>
 socket.on("motors", (arr) => console.log("Motors:\n " + printObjectArray(arr)));
 
 socket.on("tasks", (arr) => console.log("Tasks:\n " + printObjectArray(arr)));
+
+socket.on("task_image", (data) => {
+  // Received data is of type Buffer
+  const base64Image = data.toString("base64");
+  console.log(base64Image.substr(0, 10));
+});
+
 // Handle disconnection
 socket.on("disconnect", (reason) => {
   console.log("Disconnected from the server: " + reason);
