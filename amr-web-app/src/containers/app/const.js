@@ -19,6 +19,7 @@ const socketMessage = {
   ODOMETRY: 'odometry',
 
   TASKS: 'tasks',
+  TASK_DIAGRAM: 'task_image',
 }
 
 // This web application's configuration

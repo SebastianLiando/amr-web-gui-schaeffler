@@ -90,6 +90,9 @@ const app = () => {
 
   const [tasksData, setTasksData] = useState()
 
+  // Task diagram image
+  const [taskImage, setTaskImage] = useState()
+
   // Error message to be displayed in the snack bar
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -173,6 +176,11 @@ const app = () => {
     socket.on(socketMessage.MOTORS, (data) => setMotorData(data))
 
     socket.on(socketMessage.TASKS, (data) => setTasksData(data))
+
+    socket.on(socketMessage.TASK_DIAGRAM, (data) => {
+      const base64Image = btoa(String.fromCharCode(...new Uint8Array(data)))
+      setTaskImage(base64Image)
+    })
   }, [setConnected, setErrorMessage])
 
   // componentDidMount()
@@ -311,7 +319,7 @@ const app = () => {
           onClose={closeDialog}
         >
           <DialogContent>
-            <TaskDiagram />
+            <TaskDiagram base64Png={taskImage} />
           </DialogContent>
           <DialogActions>
             <Button color="secondary" onClick={closeDialog}>
@@ -384,6 +392,7 @@ const app = () => {
                   >
                     <Container>
                       <TaskTab
+                        base64Png={taskImage}
                         onTabChange={(index) => setTaskTabIndex(index)}
                         value={taskTabIndex}
                         tasks={tasksData}

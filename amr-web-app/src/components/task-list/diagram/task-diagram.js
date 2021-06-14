@@ -1,9 +1,7 @@
 import { Container, makeStyles } from '@material-ui/core'
 import React, { useMemo } from 'react'
 
-import smachViewer from '../../../assets/images/smach_viewer.png'
-
-const taskDiagram = ({ maxWidth = '100%', onClick }) => {
+const taskDiagram = ({ base64Png, maxWidth = '100%', onClick }) => {
   const useStyles = useMemo(
     () =>
       makeStyles({
@@ -19,7 +17,13 @@ const taskDiagram = ({ maxWidth = '100%', onClick }) => {
 
   return (
     <Container onClick={onClick}>
-      <img src={smachViewer} className={classes.image} alt="Task Diagram" />
+      {base64Png ? (
+        <img
+          src={`data:image/png;base64,${base64Png}`}
+          className={classes.image}
+          alt="Task Diagram"
+        />
+      ) : null}
     </Container>
   )
 }

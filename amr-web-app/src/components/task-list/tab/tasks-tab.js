@@ -7,6 +7,7 @@ import TasksList from '../list/tasks-list'
 import { taskTabs } from './const'
 
 const tasksTab = ({
+  base64Png,
   value = taskTabs.LIST,
   onTabChange,
   tasks = [],
@@ -37,7 +38,11 @@ const tasksTab = ({
           <TasksList tasks={tasks} />
         </TabPanel>
         <TabPanel value={taskTabs.DIAGRAM}>
-          <TaskDiagram maxWidth={diagramMaxWidth} onClick={onDiagramClick} />
+          <TaskDiagram
+            maxWidth={diagramMaxWidth}
+            onClick={onDiagramClick}
+            base64Png={base64Png}
+          />
         </TabPanel>
       </TabContext>
     </Box>
