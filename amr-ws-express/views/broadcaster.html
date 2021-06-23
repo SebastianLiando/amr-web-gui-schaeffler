@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Broadcaster</title>
+
+    <style>
+      video {
+        display: block;
+        max-height: 400px;
+        margin: 16px 0px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <video autoplay id="rviz"></video>
+    <video autoplay id="gazebo"></video>
+    <video autoplay id="camera_feed"></video>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      // Get references to the video tags
+      let rvizVideo = document.querySelector("#rviz");
+      let gazeboVideo = document.querySelector("#gazebo");
+      let cameraFeedVideo = document.querySelector("#camera_feed");
+
+      // Share only video during screen share
+      const sharingOptions = {
+        video: true,
+        audio: false,
+      };
+
+      // Clients peer connections
+      const peerConnections = {};
+
+      // WebRTC connection config
+      const config = {
+        iceServers: [
+          {
+            urls: ["stun:stun.l.google.com:19302"],
+          },
+        ],
+      };
+
+      /**
+       * Displays share screen dialog to the user, and return the selected stream.
+       * Returns null when the user cancels the dialog.
+       *
+       * The options parameter is the display media constraints object.
+       *
+       * More info on https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia
+       * */
+      const chooseScreenStream = async (options) => {
+        let captureStream = null;
+
+        try {
+          // Display share screen dialog
+          captureStream = await navigator.mediaDevices.getDisplayMedia(options);
+        } catch (err) {
+          // When the user cancels the dialog
+          console.error("Error: " + err);
+          return null;
+        }
+
+        return captureStream;
+      };
+
+      // This function loads MediaStream to a <video> tag.
+      const loadStreamToVideoTag = (stream, videoTag) => {
+        videoTag.srcObject = stream;
+        videoTag.play();
+      };
+
+      // The main function
+      const main = async () => {
+        // Request RVIZ window
+        const rvizStream = await chooseScreenStream(sharingOptions);
+        loadStreamToVideoTag(rvizStream, rvizVideo);
+
+        // Request Gazebo window
+        const gazeboStream = await chooseScreenStream(sharingOptions);
+        loadStreamToVideoTag(gazeboStream, gazeboVideo);
+
+        // Request camera feed window
+        const cameraStream = await chooseScreenStream(sharingOptions);
+        loadStreamToVideoTag(cameraStream, cameraFeedVideo);
+
+        // Initiate connection to WebSocket for WebRTC signaling
+        const socket = io("ws://localhost:5500");
+
+        // Close socket when the broadcaster is closed
+        window.onunload = window.onbeforeunload = () => {
+          socket.close();
+        };
+
+        // When the socket successfully connects, tell server
+        // that broadcaster is ready to send share screen streams
+        socket.on("connect", () => {
+          socket.emit("broadcaster", socket.id);
+        });
+
+        // When client sends an offer
+        socket.on("client_offer", (clientId) => {
+          const peerConn = new RTCPeerConnection(config);
+          peerConnections[clientId] = peerConn;
+
+          // Add the video streams to be transmitted
+          [rvizVideo, gazeboVideo, cameraFeedVideo]
+            .map((videoTag) => videoTag.srcObject)
+            .forEach((stream) =>
+              stream
+                .getTracks()
+                .forEach((track) => peerConn.addTrack(track, stream))
+            );
+
+          // When an ICE candidate is ready, send to the client
+          peerConn.onicecandidate = (event) => {
+            if (event.candidate) {
+              console.log("Sending ice candidate to ", clientId);
+              socket.emit("candidate", clientId, event.candidate);
+            }
+          };
+
+          // When the peer connection state changes
+          peerConn.addEventListener("connectionstatechange", (event) => {
+            console.log(
+              "Change in connection state: ",
+              peerConn.connectionState
+            );
+          });
+
+          // Send offer to the client
+          peerConn
+            .createOffer()
+            .then((sdp) => peerConn.setLocalDescription(sdp))
+            .then(() => {
+              console.log("Sending offer to client ", clientId);
+              socket.emit("offer", clientId, peerConn.localDescription);
+            });
+        });
+
+        // When client sends an answer
+        socket.on("answer", (clientId, desc) => {
+          console.log("Received answer from ", clientId);
+
+          peerConnections[clientId]
+            .setRemoteDescription(desc)
+            .then(() => console.log("Set server remote description"));
+        });
+
+        // When client sends an ICE candidate
+        socket.on("candidate", (clientId, candidate) => {
+          console.log("Received ice candidate from ", clientId);
+
+          peerConnections[clientId]
+            .addIceCandidate(new RTCIceCandidate(candidate))
+            .catch((e) => console.error(e));
+        });
+
+        // When client chooses to disconnect
+        socket.on("disconnect_peer", (clientId) => {
+          peerConnections[clientId].close();
+          delete peerConnections[clientId];
+        });
+      };
+
+      main();
+    </script>
+  </body>
+</html>
