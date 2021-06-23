@@ -1,14 +1,7 @@
+// WenSocket port number
 const PORT = 5500;
 
-const fs = require("fs");
-
-const express = require("express");
-const app = express();
-
-const http = require("http");
-const server = http.createServer();
-
-const { Server } = require("socket.io");
+// Dummy data
 const {
   getRobotHealthState,
   getOdometryData,
@@ -16,6 +9,22 @@ const {
   motorData,
   sensorData,
 } = require("./dummy/data");
+
+const fs = require("fs");
+
+const express = require("express");
+const app = express();
+
+// Load broadcaster on root path
+app.get("/", (_, res) => {
+  res.sendFile(__dirname + "/views/broadcaster.html");
+});
+
+const http = require("http");
+const server = http.createServer(app);
+
+const { Server } = require("socket.io");
+const { Socket } = require("dgram");
 
 const io = new Server(server, {
   cors: {
@@ -44,9 +53,49 @@ io.on("connection", (clientSocket) => {
     });
   }, 5000);
 
-  clientSocket.on("disconnect", () =>
-    console.log(`User ${clientSocket.id} has been disconnected`)
-  );
+  /* ----------------- WebRTC Signaling ----------------- */
+  // The broadcaster's socket id
+  let broadcasterId;
+
+  // When the broadcaster is ready to send share screen
+  clientSocket.on("broadcast_ready", (id) => {
+    broadcasterId = id;
+    // TODO: send signal to watchers
+  });
+
+  // When the watcher sends an offer to the broadcaster
+  clientSocket.on("client_offer", () => {
+    const clientId = clientSocket.id;
+
+    clientSocket.to(broadcasterId).emit("client_offer", clientId);
+  });
+
+  // When sending an offer over
+  clientSocket.on("offer", (clientId, desc) => {
+    const senderId = clientSocket.id;
+    clientSocket.to(clientId).emit("offer", senderId, desc);
+  });
+
+  // When sending an answer over
+  clientSocket.on("answer", (serverId, desc) => {
+    const clientId = clientSocket.id;
+    clientSocket.to(serverId).emit("answer", clientId, desc);
+  });
+
+  // When sending ICE candidate over
+  clientSocket.on("candidate", (receiverId, candidate) => {
+    const senderId = clientSocket.id;
+
+    clientSocket.to(receiverId).emit("candidate", senderId, candidate);
+  });
+
+  // When the client disconnects from the WebSocket
+  clientSocket.on("disconnect", () => {
+    console.log(`User ${clientSocket.id} has been disconnected`);
+
+    // Tell the broadcaster to disconnect this watcher
+    clientSocket.to(broadcasterId).emit("disconnect_peer", clientSocket.id);
+  });
 });
 
 // Fake update the health state and odometry every 2 seconds
