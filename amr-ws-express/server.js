@@ -33,6 +33,9 @@ const io = new Server(server, {
   },
 });
 
+ // The broadcaster's socket id
+ let broadcasterId;
+
 // When a client connects to the server
 io.on("connection", (clientSocket) => {
   console.log(`User ${clientSocket.id} has been connected`);
@@ -54,17 +57,19 @@ io.on("connection", (clientSocket) => {
   }, 5000);
 
   /* ----------------- WebRTC Signaling ----------------- */
-  // The broadcaster's socket id
-  let broadcasterId;
 
   // When the broadcaster is ready to send share screen
-  clientSocket.on("broadcast_ready", (id) => {
+  clientSocket.on("broadcaster", (id) => {
     broadcasterId = id;
-    // TODO: send signal to watchers
+    console.log("Got broadcaster id:", broadcasterId);
+
+    // Send signal to watchers that the broadcaster is ready
+    io.emit("watcher");
   });
 
   // When the watcher sends an offer to the broadcaster
   clientSocket.on("client_offer", () => {
+    console.log("Sending client offer event to", broadcasterId);
     const clientId = clientSocket.id;
 
     clientSocket.to(broadcasterId).emit("client_offer", clientId);

@@ -102,6 +102,7 @@
 
         // When client sends an offer
         socket.on("client_offer", (clientId) => {
+          console.log("Received client offer");
           const peerConn = new RTCPeerConnection(config);
           peerConnections[clientId] = peerConn;
 

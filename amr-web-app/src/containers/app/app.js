@@ -34,45 +34,63 @@ import SensorsStates from '../../components/health-state/sensors-states/sensors-
 import Odometry from '../../components/nav/odometry/odometry'
 import TaskTab from '../../components/task-list/tab/tasks-tab'
 
-import { mainTabs, zoomableComponent, socketMessage, config } from './const'
+import {
+  mainTabs,
+  zoomableComponent,
+  socketMessage,
+  config,
+  rtcConfig,
+} from './const'
 import CompanyLogo from '../../components/top-bar/company-logo/company-logo'
 import ServerIndicator from '../../components/top-bar/server-indicator/server-indicator'
 import ThemeToggle from '../../components/top-bar/theme-toggle/theme-toggle'
 import { green } from '@material-ui/core/colors'
-import RVIZ from '../streams/rviz/rviz'
-import Gazebo from '../streams/gazebo/gazebo'
-import Camera from '../streams/camera/camera'
+import VideoWindow from '../streams/video-window/video-window'
 import { taskTabs } from '../../components/task-list/tab/const'
 
 import { io } from 'socket.io-client'
 import TaskDiagram from '../../components/task-list/diagram/task-diagram'
 
-const useStyles = makeStyles({
-  app: {
-    width: '100%',
-    flex: '1 0 auto',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  appBar: {
-    flex: '0 0 auto',
-  },
-
-  content: {
-    flex: '1 0 auto',
-  },
-
-  logo: {
-    flex: '1 0 auto',
-  },
-
-  grid: {
-    height: '100%',
-  },
-})
-
 const app = () => {
+  // Max height for the right panel (only for large screen and above)
+  const [maxBodyHeight, setMaxBodyHeight] = useState('100%')
+
+  const useStyles = useMemo(
+    () =>
+      makeStyles((theme) => ({
+        app: {
+          width: '100%',
+          flex: '1 0 auto',
+          display: 'flex',
+          flexDirection: 'column',
+        },
+
+        appBar: {
+          flex: '0 0 auto',
+        },
+
+        content: {
+          flex: '1 0 auto',
+        },
+
+        logo: {
+          flex: '1 0 auto',
+        },
+
+        grid: {
+          height: '100%',
+        },
+
+        rightTabPanel: {
+          overflowY: 'auto',
+          [theme.breakpoints.up('lg')]: {
+            maxHeight: maxBodyHeight,
+          },
+        },
+      })),
+    [maxBodyHeight]
+  )
+
   const classes = useStyles()
 
   // WebSocket server connection state
@@ -108,6 +126,8 @@ const app = () => {
   // Is the full width dialog open
   const [isDialogOpen, setDialogOpen] = useState(false)
 
+  const [srcObjects, setSrcObjects] = useState([])
+
   const theme = useMemo(
     () =>
       createMuiTheme({
@@ -118,7 +138,6 @@ const app = () => {
                 minHeight: '100vh',
                 maxHeight: '100vh',
                 display: 'flex',
-                overflow: 'hidden',
               },
             },
           },
@@ -130,8 +149,6 @@ const app = () => {
       }),
     [isLightTheme]
   )
-
-  const [maxBodyHeight, setMaxBodyHeight] = useState('100%')
 
   const [currentZoomed, setCurrentZoomed] = useState(zoomableComponent.NONE)
 
@@ -181,6 +198,55 @@ const app = () => {
       const base64Image = btoa(String.fromCharCode(...new Uint8Array(data)))
       setTaskImage(base64Image)
     })
+
+    // When broadcaster is ready, send offer to broadcaster
+    socket.on(socketMessage.WATCHER, () => {
+      console.log('Watcher')
+      socket.emit(socketMessage.CLIENT_OFFER)
+    })
+
+    let peerConnection
+
+    socket.on(socketMessage.OFFER, (serverId, description) => {
+      peerConnection = new RTCPeerConnection(rtcConfig)
+
+      peerConnection
+        .setRemoteDescription(description)
+        .then(() => peerConnection.createAnswer())
+        .then((sdp) => peerConnection.setLocalDescription(sdp))
+        .then(() => {
+          socket.emit(
+            socketMessage.ANSWER,
+            serverId,
+            peerConnection.localDescription
+          )
+        })
+
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+          socket.emit(socketMessage.CANDIDATE, serverId, event.candidate)
+        }
+      }
+
+      peerConnection.ontrack = (event) => {
+        console.log(event.streams)
+
+        const stream = event.streams[0]
+
+        srcObjects.push(stream)
+        setSrcObjects(srcObjects)
+        console.log(srcObjects.length)
+      }
+    })
+
+    socket.on(socketMessage.CANDIDATE, (serverId, candidate) => {
+      peerConnection
+        .addIceCandidate(new RTCIceCandidate(candidate))
+        .catch((e) => console.error(e))
+    })
+
+    // Try to connect to WebRTC on start (in case the sharing has been started)
+    socket.emit(socketMessage.CLIENT_OFFER)
   }, [setConnected, setErrorMessage])
 
   // componentDidMount()
@@ -243,15 +309,24 @@ const app = () => {
   )
 
   const rvizComponent = (
-    <RVIZ onIconClick={buildZoomHandler(zoomableComponent.RVIZ)} />
+    <VideoWindow
+      srcObject={srcObjects[0]}
+      onIconClick={buildZoomHandler(zoomableComponent.RVIZ)}
+    />
   )
 
   const gazeboComponent = (
-    <Gazebo onIconClick={buildZoomHandler(zoomableComponent.GAZEBO)} />
+    <VideoWindow
+      srcObject={srcObjects[1]}
+      onIconClick={buildZoomHandler(zoomableComponent.GAZEBO)}
+    />
   )
 
   const cameraComponent = (
-    <Camera onIconClick={buildZoomHandler(zoomableComponent.CAMERA)} />
+    <VideoWindow
+      srcObject={srcObjects[2]}
+      onIconClick={buildZoomHandler(zoomableComponent.CAMERA)}
+    />
   )
 
   switch (currentZoomed) {
@@ -259,7 +334,7 @@ const app = () => {
       leftBox = (
         <Fragment>
           <Grid item xs container direction="row">
-            <Grid item xs sm>
+            <Grid item xs={12} sm>
               {rvizComponent}
             </Grid>
             <Grid item xs={12} sm>
@@ -372,10 +447,7 @@ const app = () => {
                 <TabContext value={mainTabIndex.toString()}>
                   <TabPanel
                     value={mainTabs.STATES}
-                    style={{
-                      maxHeight: maxBodyHeight,
-                      overflowY: 'auto',
-                    }}
+                    className={classes.rightTabPanel}
                   >
                     <GeneralHealthState data={generalHealthData} />
 
@@ -385,10 +457,7 @@ const app = () => {
                   </TabPanel>
                   <TabPanel
                     value={mainTabs.TASKS}
-                    style={{
-                      maxHeight: maxBodyHeight,
-                      overflowY: 'auto',
-                    }}
+                    className={classes.rightTabPanel}
                   >
                     <Container>
                       <TaskTab
