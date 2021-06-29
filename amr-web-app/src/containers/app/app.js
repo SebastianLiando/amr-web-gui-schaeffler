@@ -87,6 +87,12 @@ const app = () => {
             maxHeight: maxBodyHeight,
           },
         },
+
+        gridCenterContent: {
+          alignItems: 'center',
+          textAlign: 'center',
+          margin: 'auto',
+        },
       })),
     [maxBodyHeight]
   )
@@ -334,19 +340,19 @@ const app = () => {
       leftBox = (
         <Fragment>
           <Grid item xs container direction="row">
-            <Grid item xs={12} sm>
+            <Grid item xs={12} sm className={classes.gridCenterContent}>
               {rvizComponent}
             </Grid>
-            <Grid item xs={12} sm>
+            <Grid item xs={12} sm className={classes.gridCenterContent}>
               {gazeboComponent}
             </Grid>
           </Grid>
 
           <Grid item xs container direction="row">
-            <Grid item xs={12} sm>
+            <Grid item xs={12} sm className={classes.gridCenterContent}>
               {cameraComponent}
             </Grid>
-            <Grid item xs={12} sm align="center" style={{ margin: 'auto' }}>
+            <Grid item xs={12} sm className={classes.gridCenterContent}>
               <Odometry width="100%" data={odometryData} opacity="100%" />
             </Grid>
           </Grid>

@@ -9,6 +9,8 @@ const useStyles = makeStyles({
     padding: 0,
     position: 'relative',
     transition: 'box-shadow 0.3s',
+    display: 'flex',
+    alignItems: 'center',
     boxShadow: 'none',
   },
 
@@ -43,7 +45,7 @@ const zoomable = ({ icon, children, timeout = 2000, onIconClick }) => {
   const onMouseLeaveHandler = useCallback(() => setShowIcon(false), [])
 
   const rootClasses = [classes.root]
-  
+
   if (showIcon) {
     rootClasses.push(classes.shadow)
   }
