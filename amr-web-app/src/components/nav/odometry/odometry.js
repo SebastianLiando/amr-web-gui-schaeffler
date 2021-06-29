@@ -36,6 +36,7 @@ const odometry = ({ data, width, opacity = '85%' }) => {
           maxWidth: '400px',
           opacity: opacity,
           borderRadius: '8px',
+          margin: 'auto',
         },
         padded: {
           padding: '4px 8px',
