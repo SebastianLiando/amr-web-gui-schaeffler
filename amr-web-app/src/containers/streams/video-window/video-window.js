@@ -1,8 +1,20 @@
-import { Typography } from '@material-ui/core'
+import { Typography, Container } from '@material-ui/core'
 import { ZoomOutMap } from '@material-ui/icons'
 
 import React, { useRef } from 'react'
+import Lottie from 'react-lottie'
 import Zoomable from '../zoomable/zoomable'
+
+import noVideoAnimation from '../../../assets/lottie/5884-video-movie.json'
+
+const lottieOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: noVideoAnimation,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+}
 
 const videoWindow = ({ srcObject, onIconClick }) => {
   const zoomable = useRef()
@@ -24,7 +36,10 @@ const videoWindow = ({ srcObject, onIconClick }) => {
           }}
         ></video>
       ) : (
-        <Typography>Waiting for video...</Typography>
+        <Container>
+          <Lottie options={lottieOptions} width={'30%'}></Lottie>
+          <Typography variant="subtitle">Waiting for video...</Typography>
+        </Container>
       )}
     </Zoomable>
   )
