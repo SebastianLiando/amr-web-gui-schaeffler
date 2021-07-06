@@ -1,7 +1,7 @@
-// WenSocket port number
+// WebSocket port number
 const PORT = 5500;
 
-// Dummy data
+// Import dummy data
 const {
   getRobotHealthState,
   getOdometryData,
@@ -10,8 +10,10 @@ const {
   sensorData,
 } = require("./dummy/data");
 
+// File reading library (to read task diagram dummy image)
 const fs = require("fs");
 
+// ExpressJS framework
 const express = require("express");
 const app = express();
 
@@ -24,7 +26,6 @@ const http = require("http");
 const server = http.createServer(app);
 
 const { Server } = require("socket.io");
-const { Socket } = require("dgram");
 
 const io = new Server(server, {
   cors: {
@@ -72,18 +73,23 @@ io.on("connection", (clientSocket) => {
     console.log("Sending client offer event to", broadcasterId);
     const clientId = clientSocket.id;
 
+    // Tell broadcaster that there is an offer from client
     clientSocket.to(broadcasterId).emit("client_offer", clientId);
   });
 
   // When sending an offer over
   clientSocket.on("offer", (clientId, desc) => {
     const senderId = clientSocket.id;
+
+    // Send the offer to the appropriate receiver
     clientSocket.to(clientId).emit("offer", senderId, desc);
   });
 
   // When sending an answer over
   clientSocket.on("answer", (serverId, desc) => {
     const clientId = clientSocket.id;
+
+    // Send the answer to the appropriate receiver
     clientSocket.to(serverId).emit("answer", clientId, desc);
   });
 
@@ -91,6 +97,7 @@ io.on("connection", (clientSocket) => {
   clientSocket.on("candidate", (receiverId, candidate) => {
     const senderId = clientSocket.id;
 
+    // Send the ICE candidate to the appropriate receiver
     clientSocket.to(receiverId).emit("candidate", senderId, candidate);
   });
 
