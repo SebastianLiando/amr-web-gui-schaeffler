@@ -2,6 +2,7 @@ import { IconButton, Tooltip } from '@material-ui/core'
 import { BrightnessHigh, BrightnessLow } from '@material-ui/icons'
 import React from 'react'
 
+// A button that switches the app theme between light theme and dark theme.
 const themeToggle = ({
   lightTheme = true,
   iconLight = <BrightnessHigh />,

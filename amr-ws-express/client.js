@@ -1,3 +1,8 @@
+/**
+ * This is a dummy socket-io client file. It is used for debugging and testing purposes only.
+ * It does not contribute to the project in any other way.
+ */
+
 const io = require("socket.io-client");
 
 const socket = io("ws://localhost:5500", {});

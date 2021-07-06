@@ -9,6 +9,9 @@ const useStyles = makeStyles({
     padding: 0,
     position: 'relative',
     transition: 'box-shadow 0.3s',
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
     boxShadow: 'none',
   },
 
@@ -20,9 +23,11 @@ const useStyles = makeStyles({
     position: 'absolute',
     right: '2px',
     bottom: '2px',
+    color: 'gray',
   },
 })
 
+// This components allow the children components to be zoomed in.
 const zoomable = ({ icon, children, timeout = 2000, onIconClick }) => {
   // Whether the icon is displayed to the user
   const [showIcon, setShowIcon] = useState(false)
@@ -43,7 +48,7 @@ const zoomable = ({ icon, children, timeout = 2000, onIconClick }) => {
   const onMouseLeaveHandler = useCallback(() => setShowIcon(false), [])
 
   const rootClasses = [classes.root]
-  
+
   if (showIcon) {
     rootClasses.push(classes.shadow)
   }

@@ -3,7 +3,9 @@ import { NavigationRounded } from '@material-ui/icons'
 import React, { useMemo } from 'react'
 
 /*
-    Units
+This component displays the robot pose.
+
+    Measurement Units
     yaw - degree
     vel_yaw - degree / s
     vel_x = m / s
@@ -36,6 +38,7 @@ const odometry = ({ data, width, opacity = '85%' }) => {
           maxWidth: '400px',
           opacity: opacity,
           borderRadius: '8px',
+          margin: 'auto',
         },
         padded: {
           padding: '4px 8px',

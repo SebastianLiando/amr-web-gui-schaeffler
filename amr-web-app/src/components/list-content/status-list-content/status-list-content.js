@@ -16,8 +16,10 @@ const useStyles = makeStyles({
 })
 
 /*
-Data example
+A list item that shows a chip status, title, and description. Used in the motor states and 
+sensor states.
 
+Data example
   data: [
     {
       id: 'a',

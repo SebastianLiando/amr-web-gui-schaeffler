@@ -10,12 +10,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 /*
-    data = {
-        battery: 54.4123, in percentage
-        temperature: 25.531323, in Celcius
-        distance: 10.2315, in meter
-    }
+  Shows the general health state.
 
+  Example data:
+  data = {
+      battery: 54.4123 (in percentage)
+      temperature: 25.531323 (in Celsius)
+      distance: 10.2315 (in meter)
+  }
 */
 
 const generalHealthState = ({ width, data }) => {

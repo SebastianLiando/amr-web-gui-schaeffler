@@ -87,6 +87,12 @@ const app = () => {
             maxHeight: maxBodyHeight,
           },
         },
+
+        gridCenterContent: {
+          alignItems: 'center',
+          textAlign: 'center',
+          margin: 'auto',
+        },
       })),
     [maxBodyHeight]
   )
@@ -102,10 +108,13 @@ const app = () => {
   // General health state
   const [generalHealthData, setGeneralHealthData] = useState()
 
+  // Motor states
   const [motorData, setMotorData] = useState()
 
+  // Sensor states
   const [sensorData, setSensorData] = useState()
 
+  // Tasks list
   const [tasksData, setTasksData] = useState()
 
   // Task diagram image
@@ -126,6 +135,7 @@ const app = () => {
   // Is the full width dialog open
   const [isDialogOpen, setDialogOpen] = useState(false)
 
+  // Video streams
   const [srcObjects, setSrcObjects] = useState([])
 
   const theme = useMemo(
@@ -150,6 +160,7 @@ const app = () => {
     [isLightTheme]
   )
 
+  // Currently zoomed video stream
   const [currentZoomed, setCurrentZoomed] = useState(zoomableComponent.NONE)
 
   const heightRef = useRef()
@@ -157,21 +168,28 @@ const app = () => {
   // Reference to the right grid
   const rightBoxRef = useRef()
 
+  // Maximum width of task diagram
   const [taskDiagramMaxWidth, setTaskDiagramMaxWidth] = useState('100%')
 
+  // Time to reconnect to the websocket on connection failure in milliseconds
   const reconnectionMs = config.WS_RECONNECT_DELAY
 
+  // Function that configures web socket connection
   const connectToWebSocket = useCallback(() => {
+    // Connect to the web socket.
     const socket = io(config.WS_ADDRESS, {
       reconnectionDelay: reconnectionMs,
     })
 
+    /* -------------- Setup socket listeners --------------*/
+    // When connection is successful
     socket.on('connect', () => {
       setErrorMessage('')
       setConnected(true)
       console.log('Connected to websocket')
     })
 
+    // When connection fails
     socket.on('connect_error', () => {
       setConnected(false)
       const message =
@@ -182,18 +200,24 @@ const app = () => {
       setErrorMessage(message)
     })
 
+    // When receiving general health state data
     socket.on(socketMessage.GENERAL_HEALTH, (data) =>
       setGeneralHealthData(data)
     )
 
+    // When receiving odometry data
     socket.on(socketMessage.ODOMETRY, (data) => setOdometryData(data))
 
+    // When receiving motor sensors data
     socket.on(socketMessage.SENSORS, (data) => setSensorData(data))
 
+    // When receiving motor states data
     socket.on(socketMessage.MOTORS, (data) => setMotorData(data))
 
+    // When receiving task lists data
     socket.on(socketMessage.TASKS, (data) => setTasksData(data))
 
+    // When receiving task diagram image (png)
     socket.on(socketMessage.TASK_DIAGRAM, (data) => {
       const base64Image = btoa(String.fromCharCode(...new Uint8Array(data)))
       setTaskImage(base64Image)
@@ -205,8 +229,11 @@ const app = () => {
       socket.emit(socketMessage.CLIENT_OFFER)
     })
 
+    /* -------------- WebRTC Signaling --------------*/
+    // WebRTC peer connection
     let peerConnection
 
+    // When receiving offer from the broadcaster
     socket.on(socketMessage.OFFER, (serverId, description) => {
       peerConnection = new RTCPeerConnection(rtcConfig)
 
@@ -222,12 +249,14 @@ const app = () => {
           )
         })
 
+      // When receiving ICE candidates
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
           socket.emit(socketMessage.CANDIDATE, serverId, event.candidate)
         }
       }
 
+      // When receiving stream tracks
       peerConnection.ontrack = (event) => {
         console.log(event.streams)
 
@@ -239,13 +268,14 @@ const app = () => {
       }
     })
 
+    // When receiving broadcaster's ICE candidate
     socket.on(socketMessage.CANDIDATE, (serverId, candidate) => {
       peerConnection
         .addIceCandidate(new RTCIceCandidate(candidate))
         .catch((e) => console.error(e))
     })
 
-    // Try to connect to WebRTC on start (in case the sharing has been started)
+    // Try to connect to WebRTC on start (in case the sharing has been started before)
     socket.emit(socketMessage.CLIENT_OFFER)
   }, [setConnected, setErrorMessage])
 
@@ -260,7 +290,7 @@ const app = () => {
 
     // eslint-disable-next-line no-unused-vars
     const handleResize = (_) => {
-      // Right box vertical scrolling
+      // Calculate right box vertical scrolling
       if (heightRef.current !== undefined) {
         const newMaxBodyHeight = calculateMaxBodyHeightPx(
           window,
@@ -282,16 +312,19 @@ const app = () => {
       }
     }
 
+    // Listen to resize events
     window.addEventListener('resize', handleResize)
 
     // Handle first time load
     handleResize('')
 
+    // Cleanup function
     return () => {
       window.removeEventListener('resize', handleResize)
     }
   }, [])
 
+  // The left box component
   let leftBox
 
   // Returns a function that handles zoom in and zoom out of the video streams on the left side
@@ -346,7 +379,7 @@ const app = () => {
             <Grid item xs={12} sm>
               {cameraComponent}
             </Grid>
-            <Grid item xs={12} sm align="center" style={{ margin: 'auto' }}>
+            <Grid item xs={12} sm className={classes.gridCenterContent}>
               <Odometry width="100%" data={odometryData} opacity="100%" />
             </Grid>
           </Grid>
@@ -367,6 +400,7 @@ const app = () => {
       break
   }
 
+  // Function to close dialog
   const closeDialog = useCallback(() => setDialogOpen(false), [setDialogOpen])
 
   return (

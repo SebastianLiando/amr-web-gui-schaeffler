@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core'
 import React from 'react'
 
+// A list item with icon, title, and value.
 const simpleListContent = ({ data }) => {
   return (
     <List>

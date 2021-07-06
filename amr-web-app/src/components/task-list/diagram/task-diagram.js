@@ -4,8 +4,6 @@ import React, { useMemo, Fragment } from 'react'
 import Lottie from 'react-lottie'
 import noImageAnimation from '../../../assets/lottie/9354-image-viewer-icon-animation.json'
 
-console.log(noImageAnimation)
-
 const lottieOptions = {
   loop: true,
   autoplay: true,
@@ -15,6 +13,7 @@ const lottieOptions = {
   },
 }
 
+// Displays the task diagram image. The image is in PNG. Use the base64 string representation.
 const taskDiagram = ({ base64Png, maxWidth = '100%', onClick }) => {
   const useStyles = useMemo(
     () =>
