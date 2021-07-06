@@ -11,6 +11,7 @@ const useStyles = makeStyles({
     transition: 'box-shadow 0.3s',
     display: 'flex',
     alignItems: 'center',
+    textAlign: 'center',
     boxShadow: 'none',
   },
 
@@ -22,6 +23,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     right: '2px',
     bottom: '2px',
+    color: 'gray',
   },
 })
 
