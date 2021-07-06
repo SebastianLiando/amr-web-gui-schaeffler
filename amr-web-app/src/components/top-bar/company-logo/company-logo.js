@@ -1,8 +1,9 @@
 import { makeStyles, Tooltip } from '@material-ui/core'
 import React, { useMemo } from 'react'
 
-import logo from '../../../assets/images/schaeffler-logo.png'
+import schaefflerLogo from '../../../assets/images/schaeffler-logo.png'
 
+// A component that displays the company logo.
 const companyLogo = ({
   width = '200px',
   bgColor = 'white',
@@ -25,7 +26,7 @@ const companyLogo = ({
 
   return (
     <Tooltip title={tooltip}>
-      <img src={logo} className={classes.logo} />
+      <img src={schaefflerLogo} className={classes.logo} />
     </Tooltip>
   )
 }

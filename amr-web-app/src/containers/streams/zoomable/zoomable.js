@@ -27,6 +27,7 @@ const useStyles = makeStyles({
   },
 })
 
+// This components allow the children components to be zoomed in.
 const zoomable = ({ icon, children, timeout = 2000, onIconClick }) => {
   // Whether the icon is displayed to the user
   const [showIcon, setShowIcon] = useState(false)

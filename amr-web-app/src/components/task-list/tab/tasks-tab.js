@@ -6,6 +6,7 @@ import TaskDiagram from '../diagram/task-diagram'
 import TasksList from '../list/tasks-list'
 import { taskTabs } from './const'
 
+// This component displays a tab to display the tasks in a list or in a diagram.
 const tasksTab = ({
   base64Png,
   value = taskTabs.LIST,

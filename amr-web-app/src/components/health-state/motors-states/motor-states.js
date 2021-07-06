@@ -4,8 +4,9 @@ import Expandable from '../../expandable/expandable'
 import StatusListContent from '../../list-content/status-list-content/status-list-content'
 
 /*
-Data example
+Shows the state of each motors.
 
+Data example
   data: [
     {
       id: 'a',

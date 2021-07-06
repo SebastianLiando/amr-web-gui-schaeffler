@@ -3,7 +3,9 @@ import { NavigationRounded } from '@material-ui/icons'
 import React, { useMemo } from 'react'
 
 /*
-    Units
+This component displays the robot pose.
+
+    Measurement Units
     yaw - degree
     vel_yaw - degree / s
     vel_x = m / s

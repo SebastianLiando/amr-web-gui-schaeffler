@@ -20,6 +20,7 @@ const useStyle = makeStyles({
   },
 })
 
+// A list item for a task.
 const taskListText = ({ taskName, isComplete, taskDetail }) => {
   const classes = useStyle()
 

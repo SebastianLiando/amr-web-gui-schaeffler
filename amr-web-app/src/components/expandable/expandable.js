@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core'
 import React, { useMemo } from 'react'
 
+// This widgets simplifies the use of React-UI accordion component.
 const expandable = ({ width, height, title, children }) => {
   const useStyles = useMemo(
     () =>

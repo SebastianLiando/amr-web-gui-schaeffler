@@ -1,8 +1,10 @@
+// Tabs constant values
 const mainTabs = {
   STATES: '0',
   TASKS: '1',
 }
 
+// Components in the left box that can be zoomed in
 const zoomableComponent = {
   NONE: 'None',
   RVIZ: 'RVIZ',

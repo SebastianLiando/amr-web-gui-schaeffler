@@ -16,6 +16,7 @@ const lottieOptions = {
   },
 }
 
+// Displays a video stream.
 const videoWindow = ({ srcObject, onIconClick }) => {
   const zoomable = useRef()
   const videoTag = useRef()

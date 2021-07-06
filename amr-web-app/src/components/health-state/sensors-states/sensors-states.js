@@ -4,8 +4,9 @@ import Expandable from '../../expandable/expandable'
 import StatusListContent from '../../list-content/status-list-content/status-list-content'
 
 /*
-Data example
+This component shows the state of each sensors.
 
+Data example
   data: [
     {
       id: 'a',
