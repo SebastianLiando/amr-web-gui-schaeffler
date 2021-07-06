@@ -17,7 +17,7 @@ Run the following command in the root project folder.
 npm start
 ```
 
-This will spin up the development server. Navigate to http://localhost:3000 to view the web page.
+This will spin up the development server. A browser tab should be opened for you. If not, navigate to http://localhost:3000 to view the web page.
 
 ### Running the Unit Tests
 
