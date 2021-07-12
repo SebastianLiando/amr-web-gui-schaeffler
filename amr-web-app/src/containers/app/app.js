@@ -51,6 +51,9 @@ import { taskTabs } from '../../components/task-list/tab/const'
 import { io } from 'socket.io-client'
 import TaskDiagram from '../../components/task-list/diagram/task-diagram'
 
+/**
+ * This component is the web application's entry point component.
+ */
 const app = () => {
   // Max height for the right panel (only for large screen and above)
   const [maxBodyHeight, setMaxBodyHeight] = useState('100%')

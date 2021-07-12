@@ -5,27 +5,42 @@ import React, { useMemo } from 'react'
 /*
 This component displays the robot pose.
 
-    Measurement Units
-    yaw - degree
-    vel_yaw - degree / s
-    vel_x = m / s
-    acc_x = m / s^2
-    vel_y = m / s
-    acc_y = m / s^2
+    
 
-    Data example:
-    data = {
-        yaw
-        vel_yaw
-        x
-        vel_x
-        acc_x
-        y
-        vel_y
-        acc_y
-    }
+    
 
 */
+
+/**
+ * This component displays the robot pose.
+ * 
+ * Measurement Units
+ * - yaw - degree
+ * - vel_yaw - degree / s
+ * - vel_x = m / s
+ * - acc_x = m / s^2
+ * - vel_y = m / s
+ * - acc_y = m / s^2
+ * 
+ * Props:
+ * - width - The width of the odometry. 
+ * - opacity - The opacity of the component.
+ * - data - The odometry data.
+ * 
+ * Data example:
+ * ```
+    data = {
+        yaw = 125.3,
+        vel_yaw = 3.2,
+        x = 5.14,
+        vel_x = 3.2,
+        acc_x = 3.2,
+        y = 15.3,
+        vel_y = 1.23,
+        acc_y = 0.01,
+    }
+ * ```
+ */
 const odometry = ({ data, width, opacity = '85%' }) => {
   const rotation = useMemo(() => `${data?.yaw ?? 0}deg`, [data])
 

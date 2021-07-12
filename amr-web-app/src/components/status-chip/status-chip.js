@@ -3,7 +3,14 @@ import React, { useMemo } from 'react'
 import getColor from './utils'
 import { statusChipTypes } from './const'
 
-// This component is a chip that displays status. The status can be ok, warning, or error.
+/**
+ * This chip component is used to display status conditions. The status can be ok, warning, or error.
+ * 
+ * Props:
+ * - status - The status condition text
+ * - width - The width of the chip
+ * - type - The status condition type. Import `statusChipTypes` to show the available types.
+ */
 const statusChip = ({ status, width = '80px', type = statusChipTypes.OK }) => {
   const useStyles = useMemo(
     () =>

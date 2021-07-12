@@ -16,7 +16,16 @@ const lottieOptions = {
   },
 }
 
-// Displays a video stream.
+/**
+ * This components displays and plays a video stream. If there is no video stream, it will display
+ * an animation instead. 
+ * 
+ * This component is wrapped by `Zoomable` component.
+ * 
+ * Props:
+ * - srcObject - The video stream.
+ * - onIconClick - Handler when the user clicks the enlarge icon.
+ */
 const videoWindow = ({ srcObject, onIconClick }) => {
   const zoomable = useRef()
   const videoTag = useRef()

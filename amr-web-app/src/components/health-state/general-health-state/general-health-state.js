@@ -9,17 +9,24 @@ import {
   faRoute,
 } from '@fortawesome/free-solid-svg-icons'
 
-/*
-  Shows the general health state.
-
-  Example data:
-  data = {
-      battery: 54.4123 (in percentage)
-      temperature: 25.531323 (in Celsius)
-      distance: 10.2315 (in meter)
-  }
-*/
-
+/**
+ * This component displays the general robot health state: battery level, temperature, and distance
+ * travelled. Battery level is in percentage. Temperature is in degree Celsius. Distance travelled
+ * is in meters.
+ * 
+ * Props:
+ * - width - The width of the component
+ * - data - The general health state data
+ * 
+ * Example data:
+ * ```
+    data = {
+        battery: 54.4123,
+        temperature: 25.531323,
+        distance: 10.2315,
+    }
+  ```
+ */
 const generalHealthState = ({ width, data }) => {
   return (
     <Expandable title="General" width={width}>

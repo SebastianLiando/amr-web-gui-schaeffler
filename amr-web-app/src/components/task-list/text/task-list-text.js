@@ -20,7 +20,14 @@ const useStyle = makeStyles({
   },
 })
 
-// A list item for a task.
+/**
+ * This component is a single list item for a task.
+ * 
+ * Props:
+ * - taskName - the name of the task
+ * - isComplete - `true` if the task has been completed. Otherwise, it is `false`
+ * - taskDetail - the detail of the task
+ */
 const taskListText = ({ taskName, isComplete, taskDetail }) => {
   const classes = useStyle()
 

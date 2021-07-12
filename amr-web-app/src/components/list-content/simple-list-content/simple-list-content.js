@@ -9,7 +9,14 @@ import {
 } from '@material-ui/core'
 import React from 'react'
 
-// A list item with icon, title, and value.
+// 
+/**
+ * This component displays a list of items. Each list item has an icon, title, and value.
+ * The icon must be from the FontAwesome icon. This component is used in general health states.
+ * 
+ * Props:
+ * - data - an array of list item data
+ */
 const simpleListContent = ({ data }) => {
   return (
     <List>

@@ -27,7 +27,17 @@ const useStyles = makeStyles({
   },
 })
 
-// This components allow the children components to be zoomed in.
+/**
+ * This component allow the children components to be enlarged. How the enlargement works
+ * should be handled in `onIconClick`.
+ * 
+ * Props:
+ * - icon - the clickable icon that indicates that the children component can be enlarged. This shows up when
+ *   the user hovered on this component. On mobile devices, a tap displays this icon.
+ * - children - the children components that can be enlarged.
+ * - timeout - how many milliseconds it takes to hide the clickable icon if it is displayed because of a user tap.
+ * - onIconClick - handler to handle enlargement.
+ */
 const zoomable = ({ icon, children, timeout = 2000, onIconClick }) => {
   // Whether the icon is displayed to the user
   const [showIcon, setShowIcon] = useState(false)

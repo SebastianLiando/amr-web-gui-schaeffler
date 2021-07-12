@@ -3,7 +3,15 @@ import React, { useMemo } from 'react'
 
 import schaefflerLogo from '../../../assets/images/schaeffler-logo.png'
 
-// A component that displays the company logo.
+/**
+ * This component displays the company logo.
+ * 
+ * Props:
+ * - width - the width of the component.
+ * - bgColor - the background color of the component.
+ * - borderRadius - the border radius.
+ * - tooltip - the text to display when this component is hovered.
+ */
 const companyLogo = ({
   width = '200px',
   bgColor = 'white',

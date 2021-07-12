@@ -5,8 +5,20 @@ import React, { useCallback } from 'react'
 import TaskDiagram from '../diagram/task-diagram'
 import TasksList from '../list/tasks-list'
 import { taskTabs } from './const'
-
-// This component displays a tab to display the tasks in a list or in a diagram.
+ 
+/**
+ * This component displays a tab to display the tasks in a list or in a diagram. This component
+ * depends on the `TasksList` and `TaskDiagram` component.
+ * 
+ * Props:
+ * - base64Png - Base 64 string representation of the task diagram PNG image.
+ * - value - The currently selected tab
+ * - onTabChange - Use this handler to change the currently selected tab. This handler will receive
+ *   the new task value
+ * - tasks - An array of task data
+ * - diagramMaxWidth - maximum width of the task diagram.
+ * - onDiagramClick - click event handler for when the diagram is clicked.
+ */
 const tasksTab = ({
   base64Png,
   value = taskTabs.LIST,
