@@ -16,8 +16,7 @@ const useStyles = makeStyles({
 })
 
 /*
-A list item that shows a chip status, title, and description. Used in the motor states and 
-sensor states.
+
 
 Data example
   data: [
@@ -38,6 +37,13 @@ Data example
 
   status -> ok, warning, or error
 */
+/**
+ * This component displays a list of items. Each list item shows a status chip, title, and description. 
+ * This component is used in the motor states and sensor states.
+ * 
+ * Props:
+ * - data - an array of list item data
+ */
 const statusListContent = ({ data }) => {
   const classes = useStyles()
 

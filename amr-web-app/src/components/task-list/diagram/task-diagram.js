@@ -13,7 +13,14 @@ const lottieOptions = {
   },
 }
 
-// Displays the task diagram image. The image is in PNG. Use the base64 string representation.
+/**
+ * This component displays the task diagram image. The image format is PNG.
+ * 
+ * Props:
+ * - base64Png - The base 64 string representation of the image.
+ * - maxWidth - The maximum width that the component can take
+ * - onClick - Event handler for when the component is clicked.
+ */
 const taskDiagram = ({ base64Png, maxWidth = '100%', onClick }) => {
   const useStyles = useMemo(
     () =>

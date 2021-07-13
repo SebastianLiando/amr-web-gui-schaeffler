@@ -4,16 +4,21 @@ import TaskText from '../text/task-list-text'
 import React from 'react'
 
 /**
- * Displays a list of tasks in a list format.
+ * This component displays a list of tasks in a list format. 
+ * Each tasks contain `id`, `name`, `completed`, and `description`.
+ * 
+ * Props:
+ * - tasks - an array of tasks data
  *
- * Example data for the task: {
- *     id: 1,
- *      name: "Move to waypoint A",
- *      completed: false,
- *      description: "The robot should reach waypoint A."
- * }
- *
- * @param {*} tasks An array of tasks.
+ * Single task data example: 
+ * ```
+  * {
+*     id: 1,
+*     name: "Move to waypoint A",
+*     completed: false,
+*     description: "The robot should reach waypoint A."
+  * }
+ * ```
  */
 const tasksList = ({ tasks = [] }) => {
   return (

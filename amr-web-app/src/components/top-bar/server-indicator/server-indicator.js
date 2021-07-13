@@ -4,13 +4,13 @@ import { statusChipTypes } from '../../status-chip/const'
 import StatusChip from '../../status-chip/status-chip'
 
 /**
- * A chip that tells whether the website is connected to the server or not.
+ * A chip that tells whether the web application is connected to the server or not.
  *
  * Props:
- * - title (string) - the text displayed in the chip.
- * - connected (bool) - whether the website is connected to the server.
- * - tooltipConnected (string) - the tooltip text when connected to the server.
- * - tooltipDisconnected (string) - the tooltip text when not connected to the server.
+ * - title - the text displayed in the chip.
+ * - connected - whether the website is connected to the server.
+ * - tooltipConnected - the tooltip text when connected to the server.
+ * - tooltipDisconnected - the tooltip text when not connected to the server.
  */
 const serverIndicator = ({
   title = 'SERVER',

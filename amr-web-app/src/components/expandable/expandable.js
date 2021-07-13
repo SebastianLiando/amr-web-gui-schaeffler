@@ -10,7 +10,15 @@ import {
 } from '@material-ui/core'
 import React, { useMemo } from 'react'
 
-// This widgets simplifies the use of React-UI accordion component.
+/**
+ * This widgets simplifies the use of Material-UI accordion component.
+ *
+ * Props:
+ * - width - The maximum width of the component.
+ * - height - The maximum height of the component.
+ * - title - The title of the accordion.
+ * - children - The content of the accordion. This will be shown if the accordion is expanded.
+ */
 const expandable = ({ width, height, title, children }) => {
   const useStyles = useMemo(
     () =>
