@@ -51,6 +51,8 @@ import { taskTabs } from '../../components/task-list/tab/const'
 import { io } from 'socket.io-client'
 import TaskDiagram from '../../components/task-list/diagram/task-diagram'
 
+import { arrayBufferToBase64 } from './utils'
+
 /**
  * This component is the web application's entry point component.
  */
@@ -222,7 +224,7 @@ const app = () => {
 
     // When receiving task diagram image (png)
     socket.on(socketMessage.TASK_DIAGRAM, (data) => {
-      const base64Image = btoa(String.fromCharCode(...new Uint8Array(data)))
+      const base64Image = arrayBufferToBase64(data)
       setTaskImage(base64Image)
     })
 

@@ -39,6 +39,7 @@ const videoWindow = ({ srcObject, onIconClick }) => {
       {srcObject ? (
         <video
           autoPlay
+          muted="muted"
           ref={videoTag}
           style={{
             width: '100%',
