@@ -32,8 +32,8 @@ const socketMessage = {
 
 // This web application's configuration
 const config = {
-  WS_ADDRESS: 'ws://192.168.0.106:8080',
-  // WS_ADDRESS: 'ws://localhost:8080',
+  WS_ADDRESS: 'ws://192.168.0.106:8080', // Change the IP address to the hosting device IP
+  // WS_ADDRESS: 'ws://localhost:8080', -> uncomment this line if the server is in the same computer
   WS_RECONNECT_DELAY: 5000,
 }
 
