@@ -1,5 +1,6 @@
 // WebSocket port number
-const PORT = 5500;
+const PORT = process.env.PORT || 8080;
+const HOST = "0.0.0.0";
 
 // Import dummy data
 const {
@@ -120,6 +121,6 @@ setInterval(() => {
 }, 2000);
 
 // If server is up and running, print to the console
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log("Server is running on port " + PORT);
 });

@@ -5,8 +5,10 @@
 
 const io = require("socket.io-client");
 
-const socket = io("ws://localhost:5500", {});
-console.log("Connected to server");
+const socket = io("ws://localhost:8080", {});
+socket.on('connect', () => {
+  console.log("Connected to server");
+})
 
 const printObject = (object) => {
   let result = [];
