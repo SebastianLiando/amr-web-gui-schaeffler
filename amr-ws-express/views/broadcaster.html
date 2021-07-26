@@ -87,7 +87,7 @@
         loadStreamToVideoTag(cameraStream, cameraFeedVideo);
 
         // Initiate connection to WebSocket for WebRTC signaling
-        const socket = io("ws://localhost:5500");
+        const socket = io("ws://localhost:8080");
 
         // Close socket when the broadcaster is closed
         window.onunload = window.onbeforeunload = () => {
