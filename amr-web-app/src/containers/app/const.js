@@ -32,7 +32,8 @@ const socketMessage = {
 
 // This web application's configuration
 const config = {
-  WS_ADDRESS: 'ws://localhost:5500',
+  WS_ADDRESS: 'ws://192.168.0.106:8080',
+  // WS_ADDRESS: 'ws://localhost:8080',
   WS_RECONNECT_DELAY: 5000,
 }
 
