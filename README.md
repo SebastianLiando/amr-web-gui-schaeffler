@@ -1,6 +1,8 @@
 ## AMR Web GUI
 
-Web-based graphical user interface for the AMR Robot. This project consists of a Web Socket server and a React client.
+Web-based graphical user interface for the AMR. This project consists of a Web Socket server and a React client.
+
+![user interface](docs/ui.jpg)
 
 ### Project Structure
 
